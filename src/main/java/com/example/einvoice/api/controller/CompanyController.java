@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/company")
 @RequiredArgsConstructor
 public class CompanyController {
-    private final CompanyService companyService;
+    //private final CompanyService companyService;
 }

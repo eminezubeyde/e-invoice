@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -21,8 +23,8 @@ public class Truck {
     @OneToOne
     private Driver driver;
 
-    @OneToMany
-    private Invoice invoice;
+    @OneToMany(mappedBy = "truck")
+    private List<Invoice> invoiceList;
 
 
 }

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,6 +17,9 @@ public class Driver extends User {
 
     @OneToOne
     private Truck truck;
+
+    @OneToMany(mappedBy = "driver")
+    private List<Bonus> bonusList;
 
 
 }

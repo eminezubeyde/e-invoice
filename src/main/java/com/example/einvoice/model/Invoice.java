@@ -19,14 +19,18 @@ public class Invoice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String containerNumber;// 12 haneli olacak
-    private String CompanyName;//ilişkisel yap
     private boolean isCompleted;
+    private String fromCity;//nereden
+    private String toCity; //nereye
     private BigDecimal amount;
     private Date processTime;
     private int amountKDV;
 
     @ManyToOne
     private Truck truck;
+
+    @ManyToOne
+    private Company company;
 
 
 }

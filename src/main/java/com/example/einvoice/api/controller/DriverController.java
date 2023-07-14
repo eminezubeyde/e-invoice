@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/driver")
 @RequiredArgsConstructor
 public class DriverController {
-    private final DriverService driverService;
+   // private final DriverService driverService;
 }

@@ -1,9 +1,6 @@
 package com.example.einvoice.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -20,9 +17,11 @@ public class Bonus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private BigDecimal amount;
-    private String from;//nereden
-    private String to; //nereye
+    private String fromCity;//nereden
+    private String toCity; //nereye
     private LocalDateTime processTime;
 
+    @ManyToOne
+    private Driver driver;
 
 }
