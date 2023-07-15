@@ -1,4 +1,4 @@
-package com.example.einvoice.core.response;
+package com.example.einvoice.core.responses;
 
 import lombok.Getter;
 import lombok.Setter;
