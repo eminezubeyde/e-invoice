@@ -1,7 +1,6 @@
 package com.example.einvoice.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -24,13 +23,18 @@ public class Invoice {
     private String toCity; //nereye
     private BigDecimal amount;
     private Date processTime;
-    private int amountKDV;
+    private BigDecimal amountKDV;
+    private BigDecimal netAmount;
 
     @ManyToOne
     private Truck truck;
 
     @ManyToOne
     private Company company;
+
+    public BigDecimal netAmount(BigDecimal amount, BigDecimal amountKDV) {
+        return ((amount.multiply(amountKDV)).divide(BigDecimal.valueOf(100))).add(amount);
+    }
 
 
 }
