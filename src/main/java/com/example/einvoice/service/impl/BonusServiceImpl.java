@@ -1,7 +1,8 @@
-package com.example.einvoice.service;
+package com.example.einvoice.service.impl;
 
 import com.example.einvoice.core.requests.BonusRequest;
 import com.example.einvoice.core.result.GeneralResult;
+import com.example.einvoice.service.BonusService;
 
 public class BonusServiceImpl implements BonusService {
     @Override

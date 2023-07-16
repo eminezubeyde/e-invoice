@@ -1,8 +1,9 @@
-package com.example.einvoice.service;
+package com.example.einvoice.service.impl;
 
 import com.example.einvoice.core.requests.TruckRequest;
 import com.example.einvoice.core.result.GeneralResult;
 import com.example.einvoice.repository.TruckRepository;
+import com.example.einvoice.service.TruckService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
