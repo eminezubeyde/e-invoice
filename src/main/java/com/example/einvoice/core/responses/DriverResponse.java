@@ -11,5 +11,8 @@ public class DriverResponse {
     private int id;
     private int truckId;
     private int contactId;
+    private String name;
+    private String surname;
+    private String identityNumber;
     private BigDecimal salary;
 }
