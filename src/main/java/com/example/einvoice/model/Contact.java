@@ -15,7 +15,4 @@ public class Contact {
     private int id;
     private String telephoneNumber;
     private String address;
-
-
-
 }

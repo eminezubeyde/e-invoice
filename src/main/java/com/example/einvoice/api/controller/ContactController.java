@@ -23,9 +23,13 @@ public class ContactController {
     public GeneralResult update(@RequestBody ContactRequest contactRequest, @RequestParam int contactId) {
         return contactService.update(contactRequest, contactId);
     }
+    @GetMapping
+    public GeneralResult getAll(){
+        return contactService.getAll();
+    }
 
     @DeleteMapping
-    public void delete(@RequestParam int companyId) {
-        contactService.delete(companyId);
+    public void delete(@RequestParam int contactId) {
+        contactService.delete(contactId);
     }
 }
