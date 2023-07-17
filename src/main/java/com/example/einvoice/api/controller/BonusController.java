@@ -1,7 +1,7 @@
 package com.example.einvoice.api.controller;
 
+import com.example.einvoice.core.exception.EntityNotFoundException;
 import com.example.einvoice.core.requests.create.CreateBonusRequest;
-import com.example.einvoice.core.requests.update.UpdateBonusRequest;
 import com.example.einvoice.core.result.GeneralResult;
 import com.example.einvoice.service.BonusService;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +18,13 @@ public class BonusController {
         return bonusService.create(createBonusRequest);
     }
 
-    @PutMapping
-    public GeneralResult update(@RequestBody UpdateBonusRequest updateBonusRequest, @RequestParam int bonusId) {
-        return bonusService.update(updateBonusRequest, bonusId);
+    @GetMapping
+    public GeneralResult getAll() {
+        return bonusService.getAll();
     }
 
     @DeleteMapping
-    public void delete(@RequestParam int bonusId) {
+    public void delete(@RequestParam int bonusId) throws EntityNotFoundException {
         bonusService.delete(bonusId);
     }
 }

@@ -49,10 +49,11 @@ public class CompanyServiceImpl implements CompanyService {
         CompanyDto companyDto = CompanyMapper.MAPPER.entityToResponse(company);
         return new DataResult<>(companyDto);
     }
+
     @Override
     public GeneralResult getAll() {
-        List<Company> companyList=companyRepository.findAll();
-        List<CompanyDto> companyDtoList =companyList
+        List<Company> companyList = companyRepository.findAll();
+        List<CompanyDto> companyDtoList = companyList
                 .stream()
                 .map(CompanyMapper.MAPPER::entityToResponse)
                 .toList();
@@ -62,11 +63,24 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     @Transactional
     public void delete(int companyId) throws EntityNotFoundException {
-        if(!companyRepository.existsById(companyId)){
+        if (!companyRepository.existsById(companyId)) {
             throw new EntityNotFoundException(CompanyMessage.NOT_FOUND.toString());
         }
         companyRepository.deleteById(companyId);
 
+    }
+
+    @Override
+    public boolean existsById(int companyId) {
+        return companyRepository.existsById(companyId);
+    }
+
+    @Override
+    public Company findById(int companyId) throws EntityNotFoundException {
+
+        return companyRepository
+                .findById(companyId)
+                .orElseThrow(() -> new EntityNotFoundException(CompanyMessage.NOT_FOUND.toString()));
     }
 
 

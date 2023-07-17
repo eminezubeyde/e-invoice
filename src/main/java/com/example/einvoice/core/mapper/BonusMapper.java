@@ -1,7 +1,7 @@
 package com.example.einvoice.core.mapper;
 
+import com.example.einvoice.core.dto.BonusDto;
 import com.example.einvoice.core.requests.create.CreateBonusRequest;
-import com.example.einvoice.core.dto.ResponseDto;
 import com.example.einvoice.model.Bonus;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -11,5 +11,5 @@ public interface BonusMapper {
      BonusMapper MAPPER= Mappers.getMapper(BonusMapper.class);
      Bonus requestToEntity(CreateBonusRequest createBonusRequest);
 
-     ResponseDto entityToResponse(Bonus bonus);
+     BonusDto entityToResponse(Bonus bonus);
 }
