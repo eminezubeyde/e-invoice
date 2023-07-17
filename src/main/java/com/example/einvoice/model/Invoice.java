@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -22,7 +23,7 @@ public class Invoice {
     private String fromCity;//nereden
     private String toCity; //nereye
     private BigDecimal amount;
-    private Date processTime;
+    private LocalDateTime processTime;
     private BigDecimal kdvRate;
     private BigDecimal totalAmount;
 
@@ -32,8 +33,8 @@ public class Invoice {
     @ManyToOne
     private Company company;
 
-    public BigDecimal netAmountCalculator(BigDecimal amount, BigDecimal amountKDV) {
-        return ((amount.multiply(amountKDV)).divide(BigDecimal.valueOf(100))).add(amount);
+    public BigDecimal netAmountCalculator(BigDecimal amount, BigDecimal kdvRate) {
+        return ((amount.multiply(kdvRate)).divide(BigDecimal.valueOf(100))).add(amount);
     }
 
     public void setNetAmount() {
