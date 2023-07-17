@@ -10,4 +10,7 @@ public class EInvoiceApplication {
 		SpringApplication.run(EInvoiceApplication.class, args);
 	}
 
+
+	// TODO ingilizce ve türkçe dil desteği desteği.
+	// TODO frontend tarafından kullanıcı header'da lang:tr parametre gönderirse tr diline geçecektir.
 }

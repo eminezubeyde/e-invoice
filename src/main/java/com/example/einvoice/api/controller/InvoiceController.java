@@ -1,9 +1,8 @@
 package com.example.einvoice.api.controller;
 
-import com.example.einvoice.core.requests.CompanyRequest;
-import com.example.einvoice.core.requests.InvoiceRequest;
+import com.example.einvoice.core.requests.create.CreateInvoiceRequest;
+import com.example.einvoice.core.requests.update.UpdateInvoiceRequest;
 import com.example.einvoice.core.result.GeneralResult;
-import com.example.einvoice.service.CompanyService;
 import com.example.einvoice.service.InvoiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,13 +14,13 @@ public class InvoiceController {
     private final InvoiceService invoiceService;
 
     @PostMapping
-    public GeneralResult create(@RequestBody InvoiceRequest invoiceRequest) {
-        return invoiceService.create(invoiceRequest);
+    public GeneralResult create(@RequestBody CreateInvoiceRequest createInvoiceRequest) {
+        return invoiceService.create(createInvoiceRequest);
     }
 
     @PutMapping
-    public GeneralResult update(@RequestBody InvoiceRequest invoiceRequest, @RequestParam int invoiceId) {
-        return invoiceService.update(invoiceRequest, invoiceId);
+    public GeneralResult update(@RequestBody UpdateInvoiceRequest updateInvoiceRequest, @RequestParam int invoiceId) {
+        return invoiceService.update(updateInvoiceRequest, invoiceId);
     }
 
     @DeleteMapping

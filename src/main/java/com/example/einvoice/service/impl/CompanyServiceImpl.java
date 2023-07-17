@@ -4,9 +4,9 @@ import com.example.einvoice.core.exception.AlreadyExistsException;
 import com.example.einvoice.core.exception.EntityNotFoundException;
 import com.example.einvoice.core.mapper.CompanyMapper;
 import com.example.einvoice.core.message.CompanyMessage;
-import com.example.einvoice.core.message.ContactMessage;
-import com.example.einvoice.core.requests.CompanyRequest;
-import com.example.einvoice.core.responses.CompanyResponse;
+import com.example.einvoice.core.requests.create.CreateCompanyRequest;
+import com.example.einvoice.core.dto.CompanyDto;
+import com.example.einvoice.core.requests.update.UpdateCompanyRequest;
 import com.example.einvoice.core.result.DataResult;
 import com.example.einvoice.core.result.GeneralResult;
 import com.example.einvoice.model.Company;
@@ -27,38 +27,36 @@ public class CompanyServiceImpl implements CompanyService {
     private final ContactService contactService;
 
     @Override
-    public GeneralResult create(CompanyRequest companyRequest,int contactId) throws AlreadyExistsException, EntityNotFoundException {
-        if (companyRepository.existsByTaxNumber(companyRequest.getTaxNumber())) {
+    public GeneralResult create(CreateCompanyRequest createCompanyRequest) throws AlreadyExistsException, EntityNotFoundException {
+        if (companyRepository.existsByTaxNumber(createCompanyRequest.getTaxNumber())) {
             throw new AlreadyExistsException(CompanyMessage.ALREADY_EXISTS.toString());
         }
-        if (!contactService.existsById(companyRequest.getContactId())) {
-            throw new EntityNotFoundException(ContactMessage.NOT_FOUND.toString());
-        }
-        Company company = CompanyMapper.MAPPER.requestToEntity(companyRequest);
+
+        Company company = CompanyMapper.MAPPER.requestToEntity(createCompanyRequest);
         companyRepository.save(company);
-        CompanyResponse companyResponse = CompanyMapper.MAPPER.entityToResponse(company);
-        return new DataResult<>(companyResponse);
+        CompanyDto companyDto = CompanyMapper.MAPPER.entityToResponse(company);
+        return new DataResult<>(companyDto);
     }
 
     @Override
     @Transactional
-    public GeneralResult update(CompanyRequest companyRequest, int companyId) throws EntityNotFoundException {
+    public GeneralResult update(UpdateCompanyRequest updateCompanyRequest, int companyId) throws EntityNotFoundException {
         Company company = companyRepository
                 .findById(companyId)
                 .orElseThrow(() -> new EntityNotFoundException(CompanyMessage.NOT_FOUND.toString()));
-        setUpdateCompanyRequestToEntity(companyRequest, company);
+        setUpdateCompanyRequestToEntity(updateCompanyRequest, company);
         companyRepository.save(company);
-        CompanyResponse companyResponse = CompanyMapper.MAPPER.entityToResponse(company);
-        return new DataResult<>(companyResponse);
+        CompanyDto companyDto = CompanyMapper.MAPPER.entityToResponse(company);
+        return new DataResult<>(companyDto);
     }
     @Override
     public GeneralResult getAll() {
         List<Company> companyList=companyRepository.findAll();
-        List<CompanyResponse> companyResponseList=companyList
+        List<CompanyDto> companyDtoList =companyList
                 .stream()
                 .map(CompanyMapper.MAPPER::entityToResponse)
                 .toList();
-        return new DataResult<>(companyResponseList);
+        return new DataResult<>(companyDtoList);
     }
 
     @Override
@@ -72,11 +70,11 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
 
-    private void setUpdateCompanyRequestToEntity(CompanyRequest companyRequest, Company company) {
-        Contact contact = contactService.findById(companyRequest.getContactId());
+    private void setUpdateCompanyRequestToEntity(UpdateCompanyRequest updateCompanyRequest, Company company) {
+        Contact contact = contactService.findById(updateCompanyRequest.getContactId());
         company.setContact(contact);
-        company.setName(companyRequest.getName());
-        company.setTaxNumber(companyRequest.getTaxNumber());
+        company.setName(updateCompanyRequest.getName());
+        company.setTaxNumber(updateCompanyRequest.getTaxNumber());
 
     }
 

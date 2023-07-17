@@ -1,18 +1,15 @@
 package com.example.einvoice.core.mapper;
 
-import com.example.einvoice.core.requests.ContactRequest;
-import com.example.einvoice.core.requests.DriverRequest;
-import com.example.einvoice.core.responses.ContactResponse;
-import com.example.einvoice.core.responses.DriverResponse;
+import com.example.einvoice.core.requests.create.CreateContactRequest;
+import com.example.einvoice.core.dto.ContactDto;
 import com.example.einvoice.model.Contact;
-import com.example.einvoice.model.Driver;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface ContactMapper {
      ContactMapper MAPPER= Mappers.getMapper(ContactMapper.class);
-     Contact requestToEntity(ContactRequest contactRequest);
+     Contact requestToEntity(CreateContactRequest createContactRequest);
 
-     ContactResponse entityToResponse(Contact contact);
+     ContactDto entityToResponse(Contact contact);
 }

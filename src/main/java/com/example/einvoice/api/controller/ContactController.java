@@ -1,9 +1,8 @@
 package com.example.einvoice.api.controller;
 
-import com.example.einvoice.core.requests.CompanyRequest;
-import com.example.einvoice.core.requests.ContactRequest;
+import com.example.einvoice.core.requests.create.CreateContactRequest;
+import com.example.einvoice.core.requests.update.UpdateContactRequest;
 import com.example.einvoice.core.result.GeneralResult;
-import com.example.einvoice.service.CompanyService;
 import com.example.einvoice.service.ContactService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -14,14 +13,9 @@ import org.springframework.web.bind.annotation.*;
 public class ContactController {
     private final ContactService contactService;
 
-    @PostMapping
-    public GeneralResult create(@RequestBody ContactRequest contactRequest) {
-        return contactService.create(contactRequest);
-    }
-
     @PutMapping
-    public GeneralResult update(@RequestBody ContactRequest contactRequest, @RequestParam int contactId) {
-        return contactService.update(contactRequest, contactId);
+    public GeneralResult update(@RequestBody UpdateContactRequest updateContactRequest, @RequestParam int contactId) {
+        return contactService.update(updateContactRequest, contactId);
     }
     @GetMapping
     public GeneralResult getAll(){

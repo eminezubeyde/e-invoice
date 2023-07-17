@@ -1,13 +1,14 @@
 package com.example.einvoice.service;
 
-import com.example.einvoice.core.requests.ContactRequest;
+import com.example.einvoice.core.requests.create.CreateContactRequest;
+import com.example.einvoice.core.requests.update.UpdateContactRequest;
 import com.example.einvoice.core.result.GeneralResult;
 import com.example.einvoice.model.Contact;
 
 public interface ContactService {
-    GeneralResult create(ContactRequest contactRequest);
+    GeneralResult create(CreateContactRequest createContactRequest);
 
-    GeneralResult update(ContactRequest contactRequest, int contactId);
+    GeneralResult update(UpdateContactRequest updateContactRequest, int contactId);
     GeneralResult getAll();
 
     void delete(int contactId);

@@ -1,4 +1,4 @@
-package com.example.einvoice.core.requests;
+package com.example.einvoice.core.requests.create;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class InvoiceRequest {
+public class CreateInvoiceRequest {
     private int truckId;
     private int companyId;
     private String containerNumber;

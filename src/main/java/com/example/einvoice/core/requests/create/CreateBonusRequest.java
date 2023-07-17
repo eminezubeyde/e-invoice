@@ -1,4 +1,4 @@
-package com.example.einvoice.core.requests;
+package com.example.einvoice.core.requests.create;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 
-public class BonusRequest {
+public class CreateBonusRequest {
     private BigDecimal amount;
     private String fromCity;
     private String toCity;

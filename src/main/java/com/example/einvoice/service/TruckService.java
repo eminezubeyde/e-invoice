@@ -1,13 +1,18 @@
 package com.example.einvoice.service;
 
-import com.example.einvoice.core.requests.TruckRequest;
+import com.example.einvoice.core.exception.EntityNotFoundException;
+import com.example.einvoice.core.requests.create.CreateTruckRequest;
 import com.example.einvoice.core.result.GeneralResult;
+import com.example.einvoice.model.Truck;
 
 public interface TruckService {
-    GeneralResult create(TruckRequest truckRequest);
+    GeneralResult create(CreateTruckRequest createTruckRequest);
+    GeneralResult getAll();
 
-    GeneralResult update(TruckRequest truckRequest, int truckId);
+    void delete(int truckId) throws EntityNotFoundException;
 
-    void delete(int truckId);
 
+    boolean existsById(int truckId);
+
+    Truck findById(int truckId) throws EntityNotFoundException;
 }

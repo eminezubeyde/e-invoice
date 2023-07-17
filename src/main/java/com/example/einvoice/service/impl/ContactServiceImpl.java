@@ -1,23 +1,21 @@
 package com.example.einvoice.service.impl;
 
 import com.example.einvoice.core.mapper.ContactMapper;
-import com.example.einvoice.core.message.CompanyMessage;
 import com.example.einvoice.core.message.ContactMessage;
-import com.example.einvoice.core.requests.ContactRequest;
-import com.example.einvoice.core.responses.ContactResponse;
+import com.example.einvoice.core.requests.create.CreateContactRequest;
+import com.example.einvoice.core.dto.ContactDto;
+import com.example.einvoice.core.requests.update.UpdateContactRequest;
 import com.example.einvoice.core.result.DataResult;
 import com.example.einvoice.core.result.GeneralResult;
 import com.example.einvoice.model.Contact;
 import com.example.einvoice.repository.ContactRepository;
 import com.example.einvoice.service.ContactService;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.metamodel.ListAttribute;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,34 +23,34 @@ public class ContactServiceImpl implements ContactService {
     private final ContactRepository contactRepository;
 
     @Override
-    public GeneralResult create(ContactRequest contactRequest) {
-        Contact contact = ContactMapper.MAPPER.requestToEntity(contactRequest);
+    public GeneralResult create(CreateContactRequest createContactRequest) {
+        Contact contact = ContactMapper.MAPPER.requestToEntity(createContactRequest);
         contactRepository.save(contact);
-        ContactResponse contactResponse = ContactMapper.MAPPER.entityToResponse(contact);
-        return new DataResult<>(contactResponse);
+        ContactDto contactDto = ContactMapper.MAPPER.entityToResponse(contact);
+        return new DataResult<>(contactDto);
     }
 
     @Override
     @Transactional
-    public GeneralResult update(ContactRequest contactRequest, int contactId) {
+    public GeneralResult update(UpdateContactRequest updateContactRequest, int contactId) {
         Contact contact = contactRepository
                 .findById(contactId)
                 .orElseThrow(() -> new EntityNotFoundException(ContactMessage.NOT_FOUND.toString()));
-        setUpdateContactRequestToEntity(contactRequest, contact);
+        setUpdateContactRequestToEntity(updateContactRequest, contact);
         contactRepository.save(contact);
-        ContactResponse contactResponse = ContactMapper.MAPPER.entityToResponse(contact);
+        ContactDto contactDto = ContactMapper.MAPPER.entityToResponse(contact);
 
-        return new DataResult<>(contactResponse);
+        return new DataResult<>(contactDto);
     }
 
     @Override
     public GeneralResult getAll() {
         List<Contact> contactList = contactRepository.findAll();
-        List<ContactResponse> contactResponseList = contactList
+        List<ContactDto> contactDtoList = contactList
                 .stream()
                 .map(ContactMapper.MAPPER::entityToResponse)
                 .toList();
-        return new DataResult<>(contactResponseList);
+        return new DataResult<>(contactDtoList);
     }
 
     @Override
@@ -78,8 +76,8 @@ public class ContactServiceImpl implements ContactService {
 
     }
 
-    private void setUpdateContactRequestToEntity(ContactRequest contactRequest, Contact contact) {
-        contact.setAddress(contactRequest.getAddress());
-        contact.setTelephoneNumber(contactRequest.getTelephoneNumber());
+    private void setUpdateContactRequestToEntity(UpdateContactRequest updateContactRequest, Contact contact) {
+        contact.setAddress(updateContactRequest.getAddress());
+        contact.setTelephoneNumber(updateContactRequest.getTelephoneNumber());
     }
 }
