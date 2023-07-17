@@ -9,4 +9,6 @@ public class CompanyDto {
     private int id;
     private String name;
     private String taxNumber;
+    private int contactId;
+
 }

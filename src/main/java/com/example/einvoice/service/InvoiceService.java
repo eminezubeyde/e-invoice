@@ -1,14 +1,15 @@
 package com.example.einvoice.service;
 
+import com.example.einvoice.core.exception.EntityNotFoundException;
 import com.example.einvoice.core.requests.create.CreateInvoiceRequest;
-import com.example.einvoice.core.requests.update.UpdateInvoiceRequest;
 import com.example.einvoice.core.result.GeneralResult;
 
 public interface InvoiceService {
-    GeneralResult create(CreateInvoiceRequest createInvoiceRequest);
+    GeneralResult create(CreateInvoiceRequest createInvoiceRequest) throws EntityNotFoundException;
 
-    GeneralResult update(UpdateInvoiceRequest updateInvoiceRequest, int invoiceId);
+    GeneralResult getAll();
 
-    void delete(int invoiceId);
+    void delete(int invoiceId) throws EntityNotFoundException;
+
 
 }

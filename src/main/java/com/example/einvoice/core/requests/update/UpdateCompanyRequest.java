@@ -10,5 +10,5 @@ import java.math.BigDecimal;
 public class UpdateCompanyRequest {
     private String name;
     private String taxNumber;
-    private int contactId;
+
 }

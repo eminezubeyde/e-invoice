@@ -1,5 +1,7 @@
 package com.example.einvoice.core.dto;
 
+import com.example.einvoice.model.Driver;
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,11 +10,11 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class ResponseDto {
+public class BonusDto {
     private int id;
-    private int driverId;
     private BigDecimal amount;
     private String fromCity;
     private String toCity;
     private LocalDateTime processTime;
+    private int driverId;
 }

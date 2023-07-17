@@ -5,7 +5,6 @@ import com.example.einvoice.core.exception.EntityNotFoundException;
 import com.example.einvoice.core.mapper.ContactMapper;
 import com.example.einvoice.core.mapper.DriverMapper;
 import com.example.einvoice.core.message.DriverMessage;
-import com.example.einvoice.core.message.TruckMessage;
 import com.example.einvoice.core.requests.create.CreateDriverRequest;
 import com.example.einvoice.core.dto.DriverDto;
 import com.example.einvoice.core.requests.update.UpdateDriverRequest;
@@ -14,7 +13,9 @@ import com.example.einvoice.core.result.GeneralResult;
 import com.example.einvoice.model.Contact;
 import com.example.einvoice.model.Driver;
 import com.example.einvoice.model.Truck;
+import com.example.einvoice.repository.ContactRepository;
 import com.example.einvoice.repository.DriverRepository;
+import com.example.einvoice.service.ContactService;
 import com.example.einvoice.service.DriverService;
 import com.example.einvoice.service.TruckService;
 import jakarta.transaction.Transactional;
@@ -28,6 +29,8 @@ import java.util.List;
 public class DriverServiceImpl implements DriverService {
     private final DriverRepository driverRepository;
     private final TruckService truckService;
+    private final ContactRepository contactRepository;
+    private final ContactService contactService;
 
     @Override
     @Transactional
@@ -35,15 +38,19 @@ public class DriverServiceImpl implements DriverService {
         if (driverRepository.existsByIdentityNumber(createDriverRequest.getIdentityNumber())) {
             throw new AlreadyExistsException(DriverMessage.ALREADY_EXISTS.toString());
         }
-        if (!truckService.existsById(createDriverRequest.getTruckId())) {
-            throw new EntityNotFoundException(TruckMessage.NOT_FOUND.toString());
+        Truck truck = truckService.findById(createDriverRequest.getTruckId());
 
+        if(truck.getDriver()!=null){
+            throw new AlreadyExistsException(DriverMessage.ALREADY_EXISTS.toString());
         }
+
         Driver driver = DriverMapper.MAPPER.requestToEntity(createDriverRequest);
 
         Contact contact = ContactMapper.MAPPER.requestToEntity(createDriverRequest.getContact());
+        contactRepository.save(contact); // todo repository kaldır
         driver.setContact(contact);
-
+        driver.setTruck(truck);
+        truck.setDriver(driver);
 
         driverRepository.save(driver);
 
@@ -51,7 +58,6 @@ public class DriverServiceImpl implements DriverService {
 
         return new DataResult<>(driverDto);
 
-        //TODO
     }
 
     @Override

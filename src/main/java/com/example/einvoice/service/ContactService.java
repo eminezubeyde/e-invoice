@@ -6,7 +6,7 @@ import com.example.einvoice.core.result.GeneralResult;
 import com.example.einvoice.model.Contact;
 
 public interface ContactService {
-    GeneralResult create(CreateContactRequest createContactRequest);
+    GeneralResult create(Contact contact);
 
     GeneralResult update(UpdateContactRequest updateContactRequest, int contactId);
     GeneralResult getAll();

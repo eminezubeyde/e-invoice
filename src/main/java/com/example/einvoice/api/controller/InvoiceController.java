@@ -1,7 +1,7 @@
 package com.example.einvoice.api.controller;
 
+import com.example.einvoice.core.exception.EntityNotFoundException;
 import com.example.einvoice.core.requests.create.CreateInvoiceRequest;
-import com.example.einvoice.core.requests.update.UpdateInvoiceRequest;
 import com.example.einvoice.core.result.GeneralResult;
 import com.example.einvoice.service.InvoiceService;
 import lombok.RequiredArgsConstructor;
@@ -14,17 +14,17 @@ public class InvoiceController {
     private final InvoiceService invoiceService;
 
     @PostMapping
-    public GeneralResult create(@RequestBody CreateInvoiceRequest createInvoiceRequest) {
+    public GeneralResult create(@RequestBody CreateInvoiceRequest createInvoiceRequest) throws EntityNotFoundException {
         return invoiceService.create(createInvoiceRequest);
     }
 
-    @PutMapping
-    public GeneralResult update(@RequestBody UpdateInvoiceRequest updateInvoiceRequest, @RequestParam int invoiceId) {
-        return invoiceService.update(updateInvoiceRequest, invoiceId);
+    @GetMapping
+    public GeneralResult getAll() {
+        return invoiceService.getAll();
     }
 
     @DeleteMapping
-    public void delete(@RequestParam int invoiceId) {
+    public void delete(@RequestParam int invoiceId) throws EntityNotFoundException {
         invoiceService.delete(invoiceId);
     }
 }

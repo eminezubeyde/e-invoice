@@ -8,5 +8,5 @@ import lombok.Setter;
 public class CreateCompanyRequest {
     private String name;
     private String taxNumber;
-    private int contactId;
+    private CreateContactRequest contactRequest;
 }

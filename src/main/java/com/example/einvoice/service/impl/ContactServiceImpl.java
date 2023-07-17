@@ -23,8 +23,8 @@ public class ContactServiceImpl implements ContactService {
     private final ContactRepository contactRepository;
 
     @Override
-    public GeneralResult create(CreateContactRequest createContactRequest) {
-        Contact contact = ContactMapper.MAPPER.requestToEntity(createContactRequest);
+    public GeneralResult create(Contact contact) {//Todo diğer taraftan gelen entity buraya nasıl kaydedilecek
+
         contactRepository.save(contact);
         ContactDto contactDto = ContactMapper.MAPPER.entityToResponse(contact);
         return new DataResult<>(contactDto);
@@ -56,10 +56,12 @@ public class ContactServiceImpl implements ContactService {
     @Override
     @Transactional
     public void delete(int contactId) {
-        if (!contactRepository.existsById(contactId)) {
-            throw new EntityNotFoundException(ContactMessage.NOT_FOUND.toString());
-        }
-        contactRepository.deleteById(contactId);
+        Contact contact = contactRepository
+                .findById(contactId)
+                .orElseThrow(() -> new EntityNotFoundException(ContactMessage.NOT_FOUND.toString()));
+
+        //Todo contact silerken company ya da driver hatası veriyor
+        contactRepository.delete(contact);
 
     }
 

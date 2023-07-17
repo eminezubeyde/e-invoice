@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class DriverController {
    private final DriverService driverService;
-    @PostMapping
-    public GeneralResult create(@RequestBody CreateDriverRequest createDriverRequest) throws AlreadyExistsException, EntityNotFoundException {
-        return driverService.create(createDriverRequest);
-    }
+
     @PutMapping
     public GeneralResult update(@RequestBody UpdateDriverRequest updateDriverRequest, @RequestParam int driverId) throws EntityNotFoundException {
         return driverService.update(updateDriverRequest,driverId);
