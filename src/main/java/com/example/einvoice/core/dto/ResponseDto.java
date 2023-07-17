@@ -1,4 +1,4 @@
-package com.example.einvoice.core.responses;
+package com.example.einvoice.core.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class BonusResponse {
+public class ResponseDto {
     private int id;
     private int driverId;
     private BigDecimal amount;

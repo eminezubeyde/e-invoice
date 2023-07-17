@@ -18,13 +18,13 @@ public class Invoice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String containerNumber;// 12 haneli olacak
-    private boolean isCompleted;
+    private boolean isActive; // kesildi mi
     private String fromCity;//nereden
     private String toCity; //nereye
     private BigDecimal amount;
     private Date processTime;
-    private BigDecimal amountKDV;
-    private BigDecimal netAmount;
+    private BigDecimal kdvRate;
+    private BigDecimal totalAmount;
 
     @ManyToOne
     private Truck truck;
@@ -36,7 +36,7 @@ public class Invoice {
         return ((amount.multiply(amountKDV)).divide(BigDecimal.valueOf(100))).add(amount);
     }
 
-    public void setNetAmount(BigDecimal netAmount) {
-        this.netAmount = netAmountCalculator(amount, amountKDV);
+    public void setNetAmount() {
+        this.totalAmount = netAmountCalculator(amount, kdvRate);
     }
 }

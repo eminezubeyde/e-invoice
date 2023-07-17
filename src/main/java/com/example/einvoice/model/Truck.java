@@ -24,7 +24,7 @@ public class Truck {
     private Driver driver;
 
     @OneToMany(mappedBy = "truck")
-    private List<Invoice> invoiceList;
+    private List<Invoice> invoiceList; // invoices
 
 
 }

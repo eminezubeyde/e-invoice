@@ -13,13 +13,15 @@ import java.util.List;
 @Entity
 @RequiredArgsConstructor
 public class Driver extends User {
+    // TODO driver tablosu yok olması gerekir user sınıfı sadece inherit edilmiş bir sınıf olacak asıl tablo driver olacak.
+    // TODO mapperSuperClass
     private BigDecimal salary;
 
     @OneToOne
     private Truck truck;
 
     @OneToMany(mappedBy = "driver")
-    private List<Bonus> bonusList;
+    private List<Bonus> bonuses;
 
 
 }

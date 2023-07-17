@@ -1,4 +1,4 @@
-package com.example.einvoice.core.responses;
+package com.example.einvoice.core.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class InvoiceResponse {
+public class InvoiceDto {
     private int id;
     private int companyId;
     private int truckId;
