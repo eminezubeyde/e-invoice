@@ -6,6 +6,7 @@ import com.example.einvoice.core.requests.create.CreateCompanyRequest;
 import com.example.einvoice.core.requests.update.UpdateCompanyRequest;
 import com.example.einvoice.core.result.GeneralResult;
 import com.example.einvoice.model.Company;
+import com.example.einvoice.model.Contact;
 
 public interface CompanyService {
     GeneralResult create(CreateCompanyRequest createCompanyRequest) throws AlreadyExistsException, EntityNotFoundException;
@@ -14,7 +15,9 @@ public interface CompanyService {
 
     GeneralResult getAll();
 
-    void delete(int companyId) throws EntityNotFoundException;
+    void deleteById(int companyId) throws EntityNotFoundException;
+
+
 
 
     boolean existsById(int companyId);

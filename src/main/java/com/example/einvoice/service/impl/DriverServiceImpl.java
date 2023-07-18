@@ -5,6 +5,7 @@ import com.example.einvoice.core.exception.EntityNotFoundException;
 import com.example.einvoice.core.mapper.ContactMapper;
 import com.example.einvoice.core.mapper.DriverMapper;
 import com.example.einvoice.core.message.DriverMessage;
+import com.example.einvoice.core.message.TruckMessage;
 import com.example.einvoice.core.requests.create.CreateDriverRequest;
 import com.example.einvoice.core.dto.DriverDto;
 import com.example.einvoice.core.requests.update.UpdateDriverRequest;
@@ -40,14 +41,14 @@ public class DriverServiceImpl implements DriverService {
         }
         Truck truck = truckService.findById(createDriverRequest.getTruckId());
 
-        if(truck.getDriver()!=null){
-            throw new AlreadyExistsException(DriverMessage.ALREADY_EXISTS.toString());
+        if (truck.getDriver() != null) {
+            throw new AlreadyExistsException(TruckMessage.ALREADY_HAS_DRIVER.toString());
         }
 
         Driver driver = DriverMapper.MAPPER.requestToEntity(createDriverRequest);
 
         Contact contact = ContactMapper.MAPPER.requestToEntity(createDriverRequest.getContact());
-        contactRepository.save(contact); // todo repository kaldır
+        contactService.create(contact);
         driver.setContact(contact);
         driver.setTruck(truck);
         truck.setDriver(driver);
@@ -62,15 +63,20 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     @Transactional
-    public GeneralResult update(UpdateDriverRequest updateDriverRequest, int driverId) throws EntityNotFoundException {
+    public GeneralResult update(UpdateDriverRequest updateDriverRequest, int driverId) throws EntityNotFoundException, AlreadyExistsException {
         Driver driver = driverRepository
                 .findById(driverId)
                 .orElseThrow(() -> new EntityNotFoundException(DriverMessage.NOT_FOUND.toString()));
         setUpdateDriverRequestToDriver(updateDriverRequest, driver);
+        Truck truck = truckService.findById(updateDriverRequest.getTruckId());
+
+        if (truck.getDriver() != null) {
+            throw new AlreadyExistsException(TruckMessage.ALREADY_HAS_DRIVER.toString());
+        }
         driverRepository.save(driver);
         DriverDto driverDto = DriverMapper.MAPPER.entityToResponse(driver);
         return new DataResult<>(driverDto);
-    }
+    }//TODO anlamlı hata mesajı dönmüyor
 
 
     @Override
@@ -89,6 +95,8 @@ public class DriverServiceImpl implements DriverService {
         Driver driver = driverRepository
                 .findById(driverId)
                 .orElseThrow(() -> new EntityNotFoundException(DriverMessage.NOT_FOUND.toString()));
+        Contact contact = driver.getContact();
+        contactService.delete(contact);
         driverRepository.delete(driver);
     }
 

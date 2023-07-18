@@ -42,6 +42,7 @@ public class TruckServiceImpl implements TruckService {
 
     @Override
     public void delete(int truckId) throws EntityNotFoundException {
+        //TODO truck silerken driver olduğu için hata yiyor
         Truck truck=truckRepository
                 .findById(truckId)
                 .orElseThrow(()->new EntityNotFoundException(TruckMessage.NOT_FOUND.toString()));

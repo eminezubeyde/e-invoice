@@ -17,6 +17,6 @@ public class User {
     private String name;
     private String surname;
     private String identityNumber;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL,orphanRemoval = true)
     private Contact contact;
 }

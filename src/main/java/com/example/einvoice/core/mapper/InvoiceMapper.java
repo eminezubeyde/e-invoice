@@ -26,9 +26,9 @@ public interface InvoiceMapper {
     @Mapping(target = "totalAmount", ignore = true)//ignore=true vererek dönüşüm işleminde total amount kısmını görmezden geliyoruz
     @AfterMapping // Dönüşüm işleminden sonra otomatik olarak çağrılması için
     default void calculateTotalAmount(Invoice invoice, @MappingTarget InvoiceDto invoiceDto) {
-        BigDecimal totalAmount = invoice.getAmount()
+        BigDecimal totalAmount = (invoice.getAmount()
                 .multiply(invoice.getKdvRate())
-                .divide(BigDecimal.valueOf(100))
+                .divide(BigDecimal.valueOf(100)))
                 .add(invoice.getAmount());
 
         invoiceDto.setTotalAmount(totalAmount);

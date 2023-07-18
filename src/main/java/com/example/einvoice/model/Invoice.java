@@ -1,5 +1,6 @@
 package com.example.einvoice.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class Invoice {
     private String fromCity;//nereden
     private String toCity; //nereye
     private BigDecimal amount;
+    @JsonFormat(pattern = "dd/MM/yyyy - HH:mm")//TODO doğru çalışmıyor
     private LocalDateTime processTime;
     private BigDecimal kdvRate;
     private BigDecimal totalAmount;

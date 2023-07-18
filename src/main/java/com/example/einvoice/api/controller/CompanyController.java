@@ -27,7 +27,7 @@ public class CompanyController {
 
     @DeleteMapping
     public void delete(@RequestParam int companyId) throws EntityNotFoundException {
-        companyService.delete(companyId);
+        companyService.deleteById(companyId);
     }
 
     @GetMapping

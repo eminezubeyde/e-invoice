@@ -1,5 +1,7 @@
 package com.example.einvoice.core.requests.create;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jdk.jfr.Timestamp;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +19,7 @@ public class CreateInvoiceRequest {
     private String fromCity;
     private String toCity;
     private BigDecimal amount;
+    @JsonFormat
     private LocalDateTime processTime;
     private BigDecimal kdvRate;
 }

@@ -27,7 +27,6 @@ import java.util.List;
 public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
     private final ContactService contactService;
-    private final ContactRepository contactRepository;
 
     @Override
     public GeneralResult create(CreateCompanyRequest createCompanyRequest) throws AlreadyExistsException, EntityNotFoundException {
@@ -38,7 +37,7 @@ public class CompanyServiceImpl implements CompanyService {
         Company company = CompanyMapper.MAPPER.requestToEntity(createCompanyRequest);
         Contact contact = ContactMapper.MAPPER.requestToEntity(createCompanyRequest.getContactRequest());
         company.setContact(contact);
-        contactRepository.save(contact);
+        contactService.create(contact);
         companyRepository.save(company);
         CompanyDto companyDto = CompanyMapper.MAPPER.entityToResponse(company);
         return new DataResult<>(companyDto);
@@ -68,13 +67,16 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     @Transactional
-    public void delete(int companyId) throws EntityNotFoundException {
-        if (!companyRepository.existsById(companyId)) {
-            throw new EntityNotFoundException(CompanyMessage.NOT_FOUND.toString());
-        }
+    public void deleteById(int companyId) throws EntityNotFoundException {
+        Company company = companyRepository
+                .findById(companyId)
+                .orElseThrow(() -> new EntityNotFoundException(CompanyMessage.NOT_FOUND.toString()));
+        Contact contact = company.getContact();
+        contactService.delete(contact);
         companyRepository.deleteById(companyId);
 
     }
+
 
     @Override
     public boolean existsById(int companyId) {

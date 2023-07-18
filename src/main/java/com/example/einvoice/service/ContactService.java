@@ -12,6 +12,7 @@ public interface ContactService {
     GeneralResult getAll();
 
     void delete(int contactId);
+    void delete(Contact contact);
 
     boolean existsById(int contactId);
 

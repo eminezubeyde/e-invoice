@@ -11,7 +11,7 @@ public interface DriverService {
 
     GeneralResult create(CreateDriverRequest createDriverRequest) throws AlreadyExistsException, EntityNotFoundException;
 
-    GeneralResult update(UpdateDriverRequest updateDriverRequest, int driverId) throws EntityNotFoundException;
+    GeneralResult update(UpdateDriverRequest updateDriverRequest, int driverId) throws EntityNotFoundException, AlreadyExistsException;
     GeneralResult getAll();
 
     void delete(int driverId) throws EntityNotFoundException;

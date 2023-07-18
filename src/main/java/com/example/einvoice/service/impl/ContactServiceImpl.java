@@ -9,7 +9,9 @@ import com.example.einvoice.core.result.DataResult;
 import com.example.einvoice.core.result.GeneralResult;
 import com.example.einvoice.model.Contact;
 import com.example.einvoice.repository.ContactRepository;
+import com.example.einvoice.service.CompanyService;
 import com.example.einvoice.service.ContactService;
+import com.example.einvoice.service.DriverService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +23,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ContactServiceImpl implements ContactService {
     private final ContactRepository contactRepository;
+    // private final DriverService driverService;
+    //private final CompanyService companyService;
 
     @Override
-    public GeneralResult create(Contact contact) {//Todo diğer taraftan gelen entity buraya nasıl kaydedilecek
+    public GeneralResult create(Contact contact) {
 
         contactRepository.save(contact);
         ContactDto contactDto = ContactMapper.MAPPER.entityToResponse(contact);
@@ -60,9 +64,18 @@ public class ContactServiceImpl implements ContactService {
                 .findById(contactId)
                 .orElseThrow(() -> new EntityNotFoundException(ContactMessage.NOT_FOUND.toString()));
 
+
         //Todo contact silerken company ya da driver hatası veriyor
         contactRepository.delete(contact);
 
+    }
+
+    @Override
+    public void delete(Contact contact) {
+        Contact contact1 = contactRepository
+                .findById(contact.getId())
+                .orElseThrow(() -> new EntityNotFoundException(ContactMessage.NOT_FOUND.toString()));
+        contactRepository.delete(contact1);
     }
 
     @Override
