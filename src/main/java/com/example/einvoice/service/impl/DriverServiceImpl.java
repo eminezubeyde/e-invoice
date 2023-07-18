@@ -76,7 +76,7 @@ public class DriverServiceImpl implements DriverService {
         driverRepository.save(driver);
         DriverDto driverDto = DriverMapper.MAPPER.entityToResponse(driver);
         return new DataResult<>(driverDto);
-    }//TODO anlamlı hata mesajı dönmüyor
+    }
 
 
     @Override
