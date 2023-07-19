@@ -17,20 +17,23 @@ public interface InvoiceMapper {
 
     Invoice requestToEntity(CreateInvoiceRequest createInvoiceRequest);
 
+
+    @Mapping(target = "totalAmount", ignore = true)//ignore=true vererek dönüşüm işleminde total amount kısmını görmezden geliyoruz
+    @AfterMapping // Dönüşüm işleminden sonra otomatik olarak çağrılması için
+    default void calculateTotalAmount(CreateInvoiceRequest request, @MappingTarget Invoice invoice) {
+        BigDecimal totalAmount = (request.getAmount()
+                .multiply(request.getKdvRate())
+                .divide(BigDecimal.valueOf(100)))
+                .add(request.getAmount());
+
+        invoice.setTotalAmount(totalAmount);
+    }
+
     //source kaynak
     //target hedef
     @Mapping(target = "truckId", source = "invoice.truck.id")
     @Mapping(target = "companyId", source = "invoice.company.id")
     InvoiceDto entityToDto(Invoice invoice);
 
-    @Mapping(target = "totalAmount", ignore = true)//ignore=true vererek dönüşüm işleminde total amount kısmını görmezden geliyoruz
-    @AfterMapping // Dönüşüm işleminden sonra otomatik olarak çağrılması için
-    default void calculateTotalAmount(Invoice invoice, @MappingTarget InvoiceDto invoiceDto) {
-        BigDecimal totalAmount = (invoice.getAmount()
-                .multiply(invoice.getKdvRate())
-                .divide(BigDecimal.valueOf(100)))
-                .add(invoice.getAmount());
 
-        invoiceDto.setTotalAmount(totalAmount);
-    }
 }
