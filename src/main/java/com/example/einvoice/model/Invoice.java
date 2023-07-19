@@ -35,11 +35,4 @@ public class Invoice {
     @ManyToOne
     private Company company;
 
-    public BigDecimal netAmountCalculator(BigDecimal amount, BigDecimal kdvRate) {
-        return ((amount.multiply(kdvRate)).divide(BigDecimal.valueOf(100))).add(amount);
-    }
-
-    public void setNetAmount() {
-        this.totalAmount = netAmountCalculator(amount, kdvRate);
-    }
 }

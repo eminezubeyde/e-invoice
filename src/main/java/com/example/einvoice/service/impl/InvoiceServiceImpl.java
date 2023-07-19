@@ -55,6 +55,13 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
+    public List<Invoice> getAllInvoice() {
+        List<Invoice> invoices = invoiceRepository.findAll();
+
+        return invoices;
+    }
+
+    @Override
     @Transactional
     public void delete(int invoiceId) throws EntityNotFoundException {
         Invoice invoice = invoiceRepository
