@@ -1,29 +1,22 @@
-package com.example.einvoice.model;
+package com.example.einvoice.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-@Entity
 @Getter
 @Setter
+@Table(name = "users")
 @RequiredArgsConstructor
-public class Company {
+@MappedSuperclass
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
-    private String taxNumber;//vergi numarası
-
-    @OneToMany(mappedBy = "company")
-    private List<Invoice> invoiceList;
-
-    @OneToOne
+    private String surname;
+    private String identityNumber;
+    @OneToOne(cascade = CascadeType.ALL,orphanRemoval = true)
     private Contact contact;
-
-
 }

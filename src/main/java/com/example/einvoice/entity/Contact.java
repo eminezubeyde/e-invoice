@@ -1,4 +1,4 @@
-package com.example.einvoice.model;
+package com.example.einvoice.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

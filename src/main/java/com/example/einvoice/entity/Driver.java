@@ -1,4 +1,4 @@
-package com.example.einvoice.model;
+package com.example.einvoice.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -19,7 +19,7 @@ public class Driver extends User {
     @OneToOne
     private Truck truck;
 
-    @OneToMany(mappedBy = "driver")
+    @OneToMany(mappedBy = "driver",fetch = FetchType.LAZY)
     private List<Bonus> bonuses;
 
 

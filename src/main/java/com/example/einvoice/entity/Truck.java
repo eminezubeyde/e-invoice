@@ -1,27 +1,30 @@
-package com.example.einvoice.model;
+package com.example.einvoice.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class Bonus {
+public class Truck {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private BigDecimal amount;
-    private String fromCity;//nereden
-    private String toCity; //nereye
-    private LocalDateTime processTime;
+    private String plate;
+    private String model;
+    private String brand;
 
-    @ManyToOne
+    @OneToOne
     private Driver driver;
+
+    @OneToMany(mappedBy = "truck")
+    private List<Invoice> invoiceList; // invoices
+
 
 }
