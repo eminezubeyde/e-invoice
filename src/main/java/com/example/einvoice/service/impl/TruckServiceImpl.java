@@ -7,7 +7,7 @@ import com.example.einvoice.core.requests.create.CreateTruckRequest;
 import com.example.einvoice.core.dto.TruckDto;
 import com.example.einvoice.core.result.DataResult;
 import com.example.einvoice.core.result.GeneralResult;
-import com.example.einvoice.model.Truck;
+import com.example.einvoice.entity.Truck;
 import com.example.einvoice.repository.TruckRepository;
 import com.example.einvoice.service.TruckService;
 import lombok.RequiredArgsConstructor;
@@ -60,5 +60,10 @@ public class TruckServiceImpl implements TruckService {
         return truckRepository
                 .findById(truckId)
                 .orElseThrow(()->new EntityNotFoundException(TruckMessage.NOT_FOUND.toString()));
+    }
+
+    @Override
+    public Truck getByPlate(String plate) {
+        return truckRepository.findByPlate(plate);
     }
 }

@@ -10,10 +10,9 @@ import com.example.einvoice.core.dto.CompanyDto;
 import com.example.einvoice.core.requests.update.UpdateCompanyRequest;
 import com.example.einvoice.core.result.DataResult;
 import com.example.einvoice.core.result.GeneralResult;
-import com.example.einvoice.model.Company;
-import com.example.einvoice.model.Contact;
+import com.example.einvoice.entity.Company;
+import com.example.einvoice.entity.Contact;
 import com.example.einvoice.repository.CompanyRepository;
-import com.example.einvoice.repository.ContactRepository;
 import com.example.einvoice.service.CompanyService;
 import com.example.einvoice.service.ContactService;
 import jakarta.transaction.Transactional;
@@ -89,6 +88,11 @@ public class CompanyServiceImpl implements CompanyService {
         return companyRepository
                 .findById(companyId)
                 .orElseThrow(() -> new EntityNotFoundException(CompanyMessage.NOT_FOUND.toString()));
+    }
+
+    @Override
+    public Company getByCompanyName(String companyName) {
+        return companyRepository.findByName(companyName);
     }
 
 
