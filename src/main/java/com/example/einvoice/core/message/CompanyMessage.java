@@ -4,7 +4,7 @@ public enum CompanyMessage {
     NOT_FOUND("Böyle bir şirket bulunamadı"),
     ALREADY_EXISTS("Böyle bir şirket zaten kayıtlı"),
     SUCCESSFUL("BAŞARIYLA EKLENDİ");
-    ;
+
 
     private final String message;
 

@@ -1,7 +1,7 @@
 package com.example.einvoice.repository;
 
 
-import com.example.einvoice.model.User;
+import com.example.einvoice.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User,Integer> {

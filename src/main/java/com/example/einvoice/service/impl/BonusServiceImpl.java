@@ -6,7 +6,7 @@ import com.example.einvoice.core.mapper.BonusMapper;
 import com.example.einvoice.core.requests.create.CreateBonusRequest;
 import com.example.einvoice.core.result.DataResult;
 import com.example.einvoice.core.result.GeneralResult;
-import com.example.einvoice.model.Bonus;
+import com.example.einvoice.entity.Bonus;
 import com.example.einvoice.repository.BonusRepository;
 import com.example.einvoice.service.BonusService;
 import lombok.RequiredArgsConstructor;

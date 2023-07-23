@@ -1,9 +1,8 @@
 package com.example.einvoice.service;
 
-import com.example.einvoice.core.requests.create.CreateContactRequest;
 import com.example.einvoice.core.requests.update.UpdateContactRequest;
 import com.example.einvoice.core.result.GeneralResult;
-import com.example.einvoice.model.Contact;
+import com.example.einvoice.entity.Contact;
 
 public interface ContactService {
     GeneralResult create(Contact contact);

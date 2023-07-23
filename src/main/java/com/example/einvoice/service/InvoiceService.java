@@ -3,7 +3,7 @@ package com.example.einvoice.service;
 import com.example.einvoice.core.exception.EntityNotFoundException;
 import com.example.einvoice.core.requests.create.CreateInvoiceRequest;
 import com.example.einvoice.core.result.GeneralResult;
-import com.example.einvoice.model.Invoice;
+import com.example.einvoice.entity.Invoice;
 
 import java.util.List;
 

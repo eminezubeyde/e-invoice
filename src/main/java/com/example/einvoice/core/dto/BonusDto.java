@@ -1,7 +1,5 @@
 package com.example.einvoice.core.dto;
 
-import com.example.einvoice.model.Driver;
-import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 

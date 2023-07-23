@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 public class ExceptionResult {
+
+
     private String status;
     private String message;
     private String path;

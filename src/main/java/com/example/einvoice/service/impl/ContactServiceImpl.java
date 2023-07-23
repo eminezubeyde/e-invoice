@@ -2,16 +2,13 @@ package com.example.einvoice.service.impl;
 
 import com.example.einvoice.core.mapper.ContactMapper;
 import com.example.einvoice.core.message.ContactMessage;
-import com.example.einvoice.core.requests.create.CreateContactRequest;
 import com.example.einvoice.core.dto.ContactDto;
 import com.example.einvoice.core.requests.update.UpdateContactRequest;
 import com.example.einvoice.core.result.DataResult;
 import com.example.einvoice.core.result.GeneralResult;
-import com.example.einvoice.model.Contact;
+import com.example.einvoice.entity.Contact;
 import com.example.einvoice.repository.ContactRepository;
-import com.example.einvoice.service.CompanyService;
 import com.example.einvoice.service.ContactService;
-import com.example.einvoice.service.DriverService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

@@ -2,7 +2,7 @@ package com.example.einvoice.core.mapper;
 
 import com.example.einvoice.core.requests.create.CreateDriverRequest;
 import com.example.einvoice.core.dto.DriverDto;
-import com.example.einvoice.model.Driver;
+import com.example.einvoice.entity.Driver;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

@@ -2,7 +2,7 @@ package com.example.einvoice.core.mapper;
 
 import com.example.einvoice.core.dto.BonusDto;
 import com.example.einvoice.core.requests.create.CreateBonusRequest;
-import com.example.einvoice.model.Bonus;
+import com.example.einvoice.entity.Bonus;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

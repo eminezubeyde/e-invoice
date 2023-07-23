@@ -2,7 +2,7 @@ package com.example.einvoice.core.mapper;
 
 import com.example.einvoice.core.requests.create.CreateInvoiceRequest;
 import com.example.einvoice.core.dto.InvoiceDto;
-import com.example.einvoice.model.Invoice;
+import com.example.einvoice.entity.Invoice;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
