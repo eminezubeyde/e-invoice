@@ -1,6 +1,5 @@
 package com.example.einvoice.api.controller;
 
-import com.example.einvoice.core.requests.create.CreateContactRequest;
 import com.example.einvoice.core.requests.update.UpdateContactRequest;
 import com.example.einvoice.core.result.GeneralResult;
 import com.example.einvoice.service.ContactService;
@@ -24,6 +23,6 @@ public class ContactController {
 
     @DeleteMapping
     public void delete(@RequestParam int contactId) {
-        contactService.delete(contactId);
+        contactService.deleteByID(contactId);
     }
 }

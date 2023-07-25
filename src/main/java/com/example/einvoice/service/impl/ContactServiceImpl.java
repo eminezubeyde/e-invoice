@@ -1,6 +1,8 @@
 package com.example.einvoice.service.impl;
 
+import com.example.einvoice.config.MessageConfig;
 import com.example.einvoice.core.mapper.ContactMapper;
+import com.example.einvoice.core.message.CompanyMessage;
 import com.example.einvoice.core.message.ContactMessage;
 import com.example.einvoice.core.dto.ContactDto;
 import com.example.einvoice.core.requests.update.UpdateContactRequest;
@@ -12,14 +14,18 @@ import com.example.einvoice.service.ContactService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
 public class ContactServiceImpl implements ContactService {
     private final ContactRepository contactRepository;
+    private final MessageSource messageSource;
     // private final DriverService driverService;
     //private final CompanyService companyService;
 
@@ -28,7 +34,7 @@ public class ContactServiceImpl implements ContactService {
 
         contactRepository.save(contact);
         ContactDto contactDto = ContactMapper.MAPPER.entityToResponse(contact);
-        return new DataResult<>(contactDto);
+        return new DataResult<>(getMessage(ContactMessage.SUCCESSFUL.getKey()), true, contactDto);
     }
 
     @Override
@@ -36,12 +42,12 @@ public class ContactServiceImpl implements ContactService {
     public GeneralResult update(UpdateContactRequest updateContactRequest, int contactId) {
         Contact contact = contactRepository
                 .findById(contactId)
-                .orElseThrow(() -> new EntityNotFoundException(ContactMessage.NOT_FOUND.toString()));
+                .orElseThrow(() -> new EntityNotFoundException(getMessage((ContactMessage.NOT_FOUND.getKey()))));
         setUpdateContactRequestToEntity(updateContactRequest, contact);
         contactRepository.save(contact);
         ContactDto contactDto = ContactMapper.MAPPER.entityToResponse(contact);
 
-        return new DataResult<>(contactDto);
+        return new DataResult<>(getMessage(ContactMessage.SUCCESSFUL.getKey()), true, contactDto);
     }
 
     @Override
@@ -51,15 +57,15 @@ public class ContactServiceImpl implements ContactService {
                 .stream()
                 .map(ContactMapper.MAPPER::entityToResponse)
                 .toList();
-        return new DataResult<>(contactDtoList);
+        return new DataResult<>(getMessage(ContactMessage.SUCCESSFUL.getKey()), true, contactDtoList);
     }
 
     @Override
     @Transactional
-    public void delete(int contactId) {
+    public void deleteByID(int contactId) {
         Contact contact = contactRepository
                 .findById(contactId)
-                .orElseThrow(() -> new EntityNotFoundException(ContactMessage.NOT_FOUND.toString()));
+                .orElseThrow(() -> new EntityNotFoundException(getMessage((ContactMessage.NOT_FOUND.getKey()))));
 
 
         //Todo contact silerken company ya da driver hatası veriyor
@@ -68,10 +74,10 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public void delete(Contact contact) {
+    public void deleteByID(Contact contact) {
         Contact contact1 = contactRepository
                 .findById(contact.getId())
-                .orElseThrow(() -> new EntityNotFoundException(ContactMessage.NOT_FOUND.toString()));
+                .orElseThrow(() -> new EntityNotFoundException(getMessage((ContactMessage.NOT_FOUND.getKey()))));
         contactRepository.delete(contact1);
     }
 
@@ -84,12 +90,17 @@ public class ContactServiceImpl implements ContactService {
     public Contact findById(int contactId) {
         return contactRepository
                 .findById(contactId)
-                .orElseThrow(() -> new EntityNotFoundException(ContactMessage.NOT_FOUND.toString()));
+                .orElseThrow(() -> new EntityNotFoundException(getMessage((ContactMessage.NOT_FOUND.getKey()))));
 
     }
 
     private void setUpdateContactRequestToEntity(UpdateContactRequest updateContactRequest, Contact contact) {
         contact.setAddress(updateContactRequest.getAddress());
         contact.setTelephoneNumber(updateContactRequest.getTelephoneNumber());
+    }
+
+    private String getMessage(String key) {
+        Locale locale = LocaleContextHolder.getLocale();
+        return messageSource.getMessage(key, null, locale);
     }
 }

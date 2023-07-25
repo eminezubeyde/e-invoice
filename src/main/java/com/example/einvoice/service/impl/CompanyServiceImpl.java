@@ -17,23 +17,27 @@ import com.example.einvoice.service.CompanyService;
 import com.example.einvoice.service.ContactService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
 public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
     private final ContactService contactService;
+    private final MessageSource messageSource;
 
     @Override
     public GeneralResult create(CreateCompanyRequest createCompanyRequest) throws AlreadyExistsException, EntityNotFoundException {
         if (companyRepository.existsByTaxNumber(createCompanyRequest.getTaxNumber())) {
-            throw new AlreadyExistsException(CompanyMessage.ALREADY_EXISTS.toString());
+            throw new AlreadyExistsException(getMessage(CompanyMessage.ALREADY_EXISTS.getKey()));
         }
         if (companyRepository.existsByName(createCompanyRequest.getName())) {
-            throw new AlreadyExistsException(CompanyMessage.ALREADY_EXISTS.toString());
+            throw new AlreadyExistsException(getMessage(CompanyMessage.ALREADY_EXISTS.getKey()));
         }
 
         Company company = CompanyMapper.MAPPER.requestToEntity(createCompanyRequest);
@@ -42,7 +46,7 @@ public class CompanyServiceImpl implements CompanyService {
         contactService.create(contact);
         companyRepository.save(company);
         CompanyDto companyDto = CompanyMapper.MAPPER.entityToResponse(company);
-        return new DataResult<>(companyDto);
+        return new DataResult<>(getMessage(CompanyMessage.SUCCESSFUL.getKey()),true,companyDto);
     }
 
     @Override
@@ -50,11 +54,11 @@ public class CompanyServiceImpl implements CompanyService {
     public GeneralResult update(UpdateCompanyRequest updateCompanyRequest, int companyId) throws EntityNotFoundException {
         Company company = companyRepository
                 .findById(companyId)
-                .orElseThrow(() -> new EntityNotFoundException(CompanyMessage.NOT_FOUND.toString()));
+                .orElseThrow(() -> new EntityNotFoundException(getMessage(CompanyMessage.NOT_FOUND.getKey())));
         setUpdateCompanyRequestToEntity(updateCompanyRequest, company);
         companyRepository.save(company);
         CompanyDto companyDto = CompanyMapper.MAPPER.entityToResponse(company);
-        return new DataResult<>(companyDto);
+        return new DataResult<>(getMessage(CompanyMessage.SUCCESSFUL.getKey()),true,companyDto);
     }
 
     @Override
@@ -64,7 +68,7 @@ public class CompanyServiceImpl implements CompanyService {
                 .stream()
                 .map(CompanyMapper.MAPPER::entityToResponse)
                 .toList();
-        return new DataResult<>(companyDtoList);
+        return new DataResult<>(getMessage(CompanyMessage.SUCCESSFUL.getKey()),true,companyDtoList);
     }
 
     @Override
@@ -72,9 +76,9 @@ public class CompanyServiceImpl implements CompanyService {
     public void deleteById(int companyId) throws EntityNotFoundException {
         Company company = companyRepository
                 .findById(companyId)
-                .orElseThrow(() -> new EntityNotFoundException(CompanyMessage.NOT_FOUND.toString()));
+                .orElseThrow(() -> new EntityNotFoundException(getMessage(CompanyMessage.NOT_FOUND.getKey())));
         Contact contact = company.getContact();
-        contactService.delete(contact);
+        contactService.deleteByID(contact);
         companyRepository.deleteById(companyId);
 
     }
@@ -90,7 +94,7 @@ public class CompanyServiceImpl implements CompanyService {
 
         return companyRepository
                 .findById(companyId)
-                .orElseThrow(() -> new EntityNotFoundException(CompanyMessage.NOT_FOUND.toString()));
+                .orElseThrow(() -> new EntityNotFoundException(getMessage(CompanyMessage.NOT_FOUND.getKey())));
     }
 
     @Override
@@ -104,6 +108,11 @@ public class CompanyServiceImpl implements CompanyService {
         company.setName(updateCompanyRequest.getName());
         company.setTaxNumber(updateCompanyRequest.getTaxNumber());
 
+    }
+
+    private String getMessage(String key) {
+        Locale locale = LocaleContextHolder.getLocale();
+        return messageSource.getMessage(key, null, locale);
     }
 
 }

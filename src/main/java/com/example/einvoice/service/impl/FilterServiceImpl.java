@@ -1,5 +1,6 @@
 package com.example.einvoice.service.impl;
 
+import com.example.einvoice.config.MessageConfig;
 import com.example.einvoice.core.dto.InvoiceDto;
 import com.example.einvoice.core.dto.InvoicesDtoResponse;
 import com.example.einvoice.core.exception.EntityNotFoundException;
@@ -19,6 +20,8 @@ import com.example.einvoice.service.FilterService;
 import com.example.einvoice.service.InvoiceService;
 import com.example.einvoice.service.TruckService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +30,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -35,12 +39,12 @@ public class FilterServiceImpl implements FilterService {
     private final TruckService truckService;
     private final CompanyService companyService;
     private final InvoiceRepository invoiceRepository;
-
+    private final MessageSource messageSource;
     @Override
     public GeneralResult getTotalAmountOfInvoicesByMonthAndCompany(String companyName, LocalDateTime month) throws EntityNotFoundException {
         Company company = companyService.getByCompanyName(companyName);
         if (company == null) {
-            throw new EntityNotFoundException(CompanyMessage.NOT_FOUND.toString());
+            throw new EntityNotFoundException(getMessage(FilterMessage.NOT_FOUND.getKey()));
             //TODO TESTİNİ YAP
         }
         List<Invoice> invoices = invoiceService.getAllInvoice();
@@ -53,7 +57,7 @@ public class FilterServiceImpl implements FilterService {
 
 
         if (filteredInvoices.isEmpty()) {
-            throw new EntityNotFoundException(FilterMessage.NOT_FOUND.toString());
+            throw new EntityNotFoundException(getMessage(FilterMessage.NOT_FOUND.getKey()));
         }
 
         BigDecimal totalAmount = filteredInvoices
@@ -73,7 +77,7 @@ public class FilterServiceImpl implements FilterService {
                         invoice.getProcessTime().getMonth() == month.getMonth())
                 .toList();
         if (filteredInvoices.isEmpty()) {
-            throw new EntityNotFoundException(FilterMessage.NOT_FOUND.toString());
+            throw new EntityNotFoundException(getMessage(FilterMessage.NOT_FOUND.getKey()));
         }
 
         List<InvoiceDto> dtos = filteredInvoices
@@ -81,7 +85,7 @@ public class FilterServiceImpl implements FilterService {
                 .map(InvoiceMapper.MAPPER::entityToDto)
                 .toList();
 
-        return new DataResult<>(dtos);
+        return new DataResult<>(getMessage(FilterMessage.SUCCESSFUL.getKey()),true,dtos);
     }
 
     @Override
@@ -94,7 +98,7 @@ public class FilterServiceImpl implements FilterService {
                         invoice.getProcessTime().isBefore(endDate.minusSeconds(1))).toList();
 
         if (filteredInvoices.isEmpty()) {
-            throw new EntityNotFoundException(FilterMessage.NOT_FOUND_DATE.toString());
+            throw new EntityNotFoundException(getMessage(FilterMessage.NOT_FOUND.getKey()));
         }
 
         List<InvoiceDto> dtos = filteredInvoices
@@ -102,7 +106,7 @@ public class FilterServiceImpl implements FilterService {
                 .map(InvoiceMapper.MAPPER::entityToDto)
                 .toList();
 
-        return new DataResult<>(dtos);
+        return new DataResult<>(getMessage(FilterMessage.SUCCESSFUL.getKey()),true,dtos);
     }
 
 
@@ -112,7 +116,7 @@ public class FilterServiceImpl implements FilterService {
         Truck truck = truckService.getByPlate(plate);
 
         if (truck == null) {
-            throw new EntityNotFoundException(TruckMessage.NOT_FOUND.toString());
+            throw new EntityNotFoundException(getMessage(TruckMessage.NOT_FOUND.getKey()));
         }
         List<Invoice> invoices = invoiceService.getAllInvoice();
 
@@ -123,7 +127,7 @@ public class FilterServiceImpl implements FilterService {
                         invoice.getProcessTime().isAfter(endDate.minusSeconds(1))).toList();
 
         if (filteredInvoices.isEmpty()) {
-            throw new EntityNotFoundException(FilterMessage.NOT_FOUND_DATE.toString());
+            throw new EntityNotFoundException(getMessage(FilterMessage.INVALID_DATE.getKey()));
         }
 
         List<InvoiceDto> invoiceDtos = filteredInvoices
@@ -137,7 +141,7 @@ public class FilterServiceImpl implements FilterService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         result.setTotalAmount(totalAmount);
 
-        return new DataResult<>("successful", invoiceDtos);
+        return new DataResult<>(getMessage(FilterMessage.SUCCESSFUL.getKey()),true, invoiceDtos);
     }
 
     // buraya kadar yapılan ve daha da farklı değişkenlerle tüm filtreleme işleminin tek metoda dönüştürülmüş hali
@@ -147,7 +151,7 @@ public class FilterServiceImpl implements FilterService {
         InvoicesDtoResponse result = new InvoicesDtoResponse();
 
         if ((page - 1) < 0) {
-            throw new GeneralException(FilterMessage.PAGE_COUNT_INVALID.toString());
+            throw new GeneralException(getMessage(FilterMessage.PAGE_COUNT_INVALID.getKey()));
         }
         // 1. durum start date < end date
         PageRequest pageRequest = PageRequest.of((page - 1), size);
@@ -206,10 +210,10 @@ public class FilterServiceImpl implements FilterService {
     private void checkDateIsValid(LocalDate startDate, LocalDate endDate) throws GeneralException {
         if (startDate != null && endDate != null) {
             if (!startDate.isEqual(endDate) && endDate.isBefore(startDate)) {
-                throw new GeneralException(FilterMessage.INVALID_DATE.toString());
+                throw new GeneralException(getMessage(FilterMessage.INVALID_DATE.getKey()));
             }
             if (endDate.isAfter(LocalDate.now())) {
-                throw new GeneralException(FilterMessage.BAD_REQUEST.toString());
+                throw new GeneralException(getMessage(FilterMessage.BAD_REQUEST.getKey()));
             }
         }
 
@@ -230,6 +234,10 @@ public class FilterServiceImpl implements FilterService {
             }
         }
 
+    }
+    private String getMessage(String key) {
+        Locale locale = LocaleContextHolder.getLocale();
+        return messageSource.getMessage(key,null,locale);
     }
 
 

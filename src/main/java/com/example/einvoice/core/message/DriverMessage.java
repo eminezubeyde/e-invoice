@@ -1,27 +1,17 @@
 package com.example.einvoice.core.message;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
-
 public enum DriverMessage {
-    NOT_FOUND("Böyle bir şoför bulunamadı"),
-    ALREADY_EXISTS("${e.invoice.driver.already.exist.message}"),
-    SUCCESSFUL("BAŞARIYLA EKLENDİ");
-    ;
+    NOT_FOUND("driverMessage.NOT_FOUND"),
+    ALREADY_EXISTS("driverMessage.ALREADY_EXISTS"),
+    SUCCESSFUL("driverMessage.SUCCESSFUL");
 
-    private final String message;
+    private final String key;
 
-
-    DriverMessage(String message) {
-        this.message = message;
+    DriverMessage(String key) {
+        this.key = key;
     }
 
-
-
-    @Override
-    public String toString() {
-        return message;
+    public String getKey() {
+        return key;
     }
 }

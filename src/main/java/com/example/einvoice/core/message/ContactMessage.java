@@ -1,18 +1,17 @@
 package com.example.einvoice.core.message;
 
 public enum ContactMessage {
-    NOT_FOUND("Not found"),
-    ALREADY_EXISTS("already exists"),
-    SUCCESSFUL("BAŞARIYLA EKLENDİ");;
+    NOT_FOUND("contactMessage.NOT_FOUND"),
+    ALREADY_EXISTS("contactMessage.ALREADY_EXISTS"),
+    SUCCESSFUL("contactMessage.SUCCESSFUL");
 
-    private final String message;
+    private final String key;
 
-    ContactMessage(String message) {
-        this.message = message;
+    ContactMessage(String key) {
+        this.key = key;
     }
 
-    @Override
-    public String toString() {
-        return message;
+    public String getKey() {
+        return key;
     }
 }

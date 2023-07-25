@@ -1,13 +1,14 @@
 package com.example.einvoice.service.impl;
 
+import com.example.einvoice.core.dto.DriverDto;
 import com.example.einvoice.core.exception.AlreadyExistsException;
 import com.example.einvoice.core.exception.EntityNotFoundException;
 import com.example.einvoice.core.mapper.ContactMapper;
 import com.example.einvoice.core.mapper.DriverMapper;
+import com.example.einvoice.core.message.CompanyMessage;
 import com.example.einvoice.core.message.DriverMessage;
 import com.example.einvoice.core.message.TruckMessage;
 import com.example.einvoice.core.requests.create.CreateDriverRequest;
-import com.example.einvoice.core.dto.DriverDto;
 import com.example.einvoice.core.requests.update.UpdateDriverRequest;
 import com.example.einvoice.core.result.DataResult;
 import com.example.einvoice.core.result.GeneralResult;
@@ -21,9 +22,12 @@ import com.example.einvoice.service.DriverService;
 import com.example.einvoice.service.TruckService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -32,17 +36,18 @@ public class DriverServiceImpl implements DriverService {
     private final TruckService truckService;
     private final ContactRepository contactRepository;
     private final ContactService contactService;
+    private final MessageSource messageSource;
 
     @Override
     @Transactional
     public GeneralResult create(CreateDriverRequest createDriverRequest) throws AlreadyExistsException, EntityNotFoundException {
         if (driverRepository.existsByIdentityNumber(createDriverRequest.getIdentityNumber())) {
-            throw new AlreadyExistsException(DriverMessage.ALREADY_EXISTS.toString());
+            throw new AlreadyExistsException(getMessage(DriverMessage.ALREADY_EXISTS.getKey()));
         }
         Truck truck = truckService.findById(createDriverRequest.getTruckId());
 
         if (truck.getDriver() != null) {
-            throw new AlreadyExistsException(TruckMessage.ALREADY_HAS_DRIVER.toString());
+            throw new AlreadyExistsException(getMessage(TruckMessage.ALREADY_HAS_DRIVER.getKey()));
         }
 
         Driver driver = DriverMapper.MAPPER.requestToEntity(createDriverRequest);
@@ -57,7 +62,7 @@ public class DriverServiceImpl implements DriverService {
 
         DriverDto driverDto = DriverMapper.MAPPER.entityToResponse(driver);
 
-        return new DataResult<>(driverDto);
+        return new DataResult<>(getMessage(DriverMessage.SUCCESSFUL.getKey()), true, driverDto);
 
     }
 
@@ -66,16 +71,16 @@ public class DriverServiceImpl implements DriverService {
     public GeneralResult update(UpdateDriverRequest updateDriverRequest, int driverId) throws EntityNotFoundException, AlreadyExistsException {
         Driver driver = driverRepository
                 .findById(driverId)
-                .orElseThrow(() -> new EntityNotFoundException(DriverMessage.NOT_FOUND.toString()));
+                .orElseThrow(() -> new EntityNotFoundException(getMessage(DriverMessage.NOT_FOUND.getKey())));
         setUpdateDriverRequestToDriver(updateDriverRequest, driver);
         Truck truck = truckService.findById(updateDriverRequest.getTruckId());
 
         if (truck.getDriver() != null) {
-            throw new AlreadyExistsException(TruckMessage.ALREADY_HAS_DRIVER.toString());
+            throw new AlreadyExistsException(getMessage(TruckMessage.ALREADY_HAS_DRIVER.getKey()));
         }
         driverRepository.save(driver);
         DriverDto driverDto = DriverMapper.MAPPER.entityToResponse(driver);
-        return new DataResult<>(driverDto);
+        return new DataResult<>(getMessage(DriverMessage.SUCCESSFUL.getKey()), true, driverDto);
     }
 
 
@@ -86,7 +91,7 @@ public class DriverServiceImpl implements DriverService {
                 .stream()
                 .map(DriverMapper.MAPPER::entityToResponse)
                 .toList();
-        return new DataResult<>(driverDtoList);
+        return new DataResult<>(getMessage(DriverMessage.SUCCESSFUL.getKey()), true, driverDtoList);
     }
 
     @Override
@@ -94,9 +99,9 @@ public class DriverServiceImpl implements DriverService {
     public void delete(int driverId) throws EntityNotFoundException {
         Driver driver = driverRepository
                 .findById(driverId)
-                .orElseThrow(() -> new EntityNotFoundException(DriverMessage.NOT_FOUND.toString()));
+                .orElseThrow(() -> new EntityNotFoundException(getMessage(DriverMessage.NOT_FOUND.getKey())));
         Contact contact = driver.getContact();
-        contactService.delete(contact);
+        contactService.deleteByID(contact);
         driverRepository.delete(driver);
     }
 
@@ -106,5 +111,10 @@ public class DriverServiceImpl implements DriverService {
 
         driver.setSalary(updateDriverRequest.getSalary());
         driver.setTruck(truck);
+    }
+
+    private String getMessage(String key) {
+        Locale locale = LocaleContextHolder.getLocale();
+        return messageSource.getMessage(key, null, locale);
     }
 }

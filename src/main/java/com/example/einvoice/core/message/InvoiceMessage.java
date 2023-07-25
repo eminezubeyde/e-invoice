@@ -1,19 +1,18 @@
 package com.example.einvoice.core.message;
 
 public enum InvoiceMessage {
-    NOT_FOUND("Böyle bir fatura bulunamadı"),
-    ALREADY_EXISTS("Böyle bir fatura zaten kayıtlı"),
-    SUCCESSFUL("BAŞARIYLA EKLENDİ");
-    ;
+    NOT_FOUND("invoiceMessage.NOT_FOUND"),
+    ALREADY_EXISTS("invoiceMessage.ALREADY_EXISTS"),
+    SUCCESSFUL("invoiceMessage.SUCCESSFUL");
 
-    private final String message;
+    private final String key;
 
-    InvoiceMessage(String message) {
-        this.message = message;
+    InvoiceMessage(String key) {
+        this.key = key;
     }
 
-    @Override
-    public String toString() {
-        return message;
+    public String getKey() {
+        return key;
     }
 }
+

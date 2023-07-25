@@ -1,21 +1,21 @@
 package com.example.einvoice.core.message;
 
-public enum FilterMessage {
-    NOT_FOUND("istenilen ayda istenilen şirket için kesilmiş fatura bulunamadı"),
-    NOT_FOUND_DATE("belirtilen tarih aralığında kesilen fatura bulunamdı"),
-    SUCCESSFUL("BAŞARILI"),
-    PAGE_COUNT_INVALID("SAYFA SAYISI GEÇERSİZ"),
-    BAD_REQUEST("tarih hatalı "),
+    public enum FilterMessage {
+        NOT_FOUND("filterMessage.NOT_FOUND"),
+        NOT_FOUND_DATE("filterMessage.NOT_FOUND_DATE"),
+        SUCCESSFUL("filterMessage.SUCCESSFUL"),
+        PAGE_COUNT_INVALID("filterMessage.PAGE_COUNT_INVALID"),
+        BAD_REQUEST("filterMessage.BAD_REQUEST"),
+        INVALID_DATE("filterMessage.INVALID_DATE");
 
-    INVALID_DATE ("bitiş tarihi başlangıç tarihinden sonra olmalıdır.") ;
-    private final String message;
+        private final String key;
 
-    FilterMessage(String message) {
-        this.message = message;
+        FilterMessage(String key) {
+            this.key = key;
+        }
+
+        public String getKey() {
+            return key;
+        }
     }
 
-    @Override
-    public String toString() {
-        return message;
-    }
-}

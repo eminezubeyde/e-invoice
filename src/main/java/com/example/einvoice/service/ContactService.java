@@ -10,8 +10,8 @@ public interface ContactService {
     GeneralResult update(UpdateContactRequest updateContactRequest, int contactId);
     GeneralResult getAll();
 
-    void delete(int contactId);
-    void delete(Contact contact);
+    void deleteByID(int contactId);
+    void deleteByID(Contact contact);
 
     boolean existsById(int contactId);
 

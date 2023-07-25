@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @Setter
 public class CreateDriverRequest {
 
-    @NotBlank(message = "{e.invoice.username.cannot.be.null.message}")
+    @NotBlank
     private String name;
     private String surname;
     private String identityNumber;

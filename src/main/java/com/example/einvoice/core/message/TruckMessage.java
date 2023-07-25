@@ -1,20 +1,20 @@
 package com.example.einvoice.core.message;
 
 public enum TruckMessage {
-    NOT_FOUND("Böyle bir kamyon bulunamadı"),
-    ALREADY_EXISTS("Böyle bir kamyon zaten kayıtlı"),
-    ALREADY_HAS_DRIVER("bu kamyona kayıtlı bir şöför zaten var"),
-    SUCCESSFUL("BAŞARIYLA EKLENDİ");
-    ;
+    NOT_FOUND("truckMessage.NOT_FOUND"),
+    ALREADY_EXISTS("truckMessage.ALREADY_EXISTS"),
+    ALREADY_HAS_DRIVER("truckMessage.ALREADY_HAS_DRIVER"),
+    SUCCESSFUL("truckMessage.SUCCESSFUL"),
+    INVALID_PLATE("truckMessage.INVALID_PLATE"),
 
-    private final String message;
+    PLATE_NOTBLANK("truckMessage.PLATE_NOTBLANK");
+    private final String key;
 
-    TruckMessage(String message) {
-        this.message = message;
+    TruckMessage(String key) {
+        this.key = key;
     }
 
-    @Override
-    public String toString() {
-        return message;
+    public String getKey() {
+        return key;
     }
 }
