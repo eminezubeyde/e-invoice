@@ -1,5 +1,6 @@
 package com.example.einvoice.api.controller;
 
+import com.example.einvoice.core.exception.AlreadyExistsException;
 import com.example.einvoice.core.exception.EntityNotFoundException;
 import com.example.einvoice.core.requests.create.CreateTruckRequest;
 import com.example.einvoice.core.result.GeneralResult;
@@ -14,7 +15,7 @@ public class TruckController {
     private final TruckService truckService;
 
     @PostMapping
-    public GeneralResult create(@RequestBody CreateTruckRequest createTruckRequest) {
+    public GeneralResult create(@RequestBody CreateTruckRequest createTruckRequest) throws AlreadyExistsException {
         return truckService.create(createTruckRequest);
     }
 
