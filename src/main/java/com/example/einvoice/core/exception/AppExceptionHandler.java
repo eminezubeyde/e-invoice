@@ -2,12 +2,18 @@ package com.example.einvoice.core.exception;
 
 import com.example.einvoice.core.result.ExceptionResult;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class AppExceptionHandler {
@@ -41,4 +47,28 @@ public class AppExceptionHandler {
                 request.getServletPath(),
                 LocalDateTime.now());
     }
+
+    @ExceptionHandler
+    public ExceptionResult handleConstraintViolationException(ConstraintViolationException exception,
+                                                              HttpServletRequest request) {
+        return new ExceptionResult(HttpStatus.ALREADY_REPORTED.toString(),
+                exception.getMessage(),
+                request.getServletPath(),
+                LocalDateTime.now());
+    }
+    @ExceptionHandler
+    public ExceptionResult handleConstraintViolationException(MethodArgumentNotValidException exception,
+                                                              HttpServletRequest request) {
+
+        Map<String, String> validationErrors = new HashMap<String, String>();
+
+        for (FieldError fieldError : exception.getBindingResult().getFieldErrors()) {
+            validationErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
+        }
+        return new ExceptionResult(HttpStatus.ALREADY_REPORTED.toString(),
+                validationErrors.values().toString(),
+                request.getServletPath(),
+                LocalDateTime.now());
+    }
+
 }
