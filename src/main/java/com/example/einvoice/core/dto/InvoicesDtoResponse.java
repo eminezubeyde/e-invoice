@@ -17,7 +17,7 @@ public class InvoicesDtoResponse {
     private int invoiceCount;
 
 }
-// TODO toplamda 100 fatura var
+// toplamda 100 fatura var
 
 // pagebale bir yapıda 20 tane dönüyorum
 // 2. sayfa 20-40
