@@ -10,7 +10,9 @@ import com.example.einvoice.core.result.DataResult;
 import com.example.einvoice.core.result.GeneralResult;
 import com.example.einvoice.entity.Contact;
 import com.example.einvoice.repository.ContactRepository;
+import com.example.einvoice.service.CompanyService;
 import com.example.einvoice.service.ContactService;
+import com.example.einvoice.service.DriverService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +28,8 @@ import java.util.Locale;
 public class ContactServiceImpl implements ContactService {
     private final ContactRepository contactRepository;
     private final MessageSource messageSource;
-    // private final DriverService driverService;
-    //private final CompanyService companyService;
+    private final DriverService driverService;
+    private final CompanyService companyService;
 
     @Override
     public GeneralResult create(Contact contact) {

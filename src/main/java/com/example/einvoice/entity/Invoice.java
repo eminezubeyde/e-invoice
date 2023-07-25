@@ -23,7 +23,6 @@ public class Invoice {
     private String fromCity;//nereden
     private String toCity; //nereye
     private BigDecimal amount;
-    @JsonFormat(pattern = "dd/MM/yyyy - HH:mm")//TODO doğru çalışmıyor
     private LocalDateTime processTime;
     private BigDecimal kdvRate;
     private BigDecimal totalAmount;

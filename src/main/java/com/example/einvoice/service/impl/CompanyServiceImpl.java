@@ -48,6 +48,7 @@ public class CompanyServiceImpl implements CompanyService {
         CompanyDto companyDto = CompanyMapper.MAPPER.entityToResponse(company);
         return new DataResult<>(getMessage(CompanyMessage.SUCCESSFUL.getKey()),true,companyDto);
     }
+    //todo contact validasyon nereye eklenecek
 
     @Override
     @Transactional

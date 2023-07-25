@@ -145,7 +145,7 @@ public class FilterServiceImpl implements FilterService {
     // buraya kadar yapılan ve daha da farklı değişkenlerle tüm filtreleme işleminin tek metoda dönüştürülmüş hali
 
     @Override
-    public GeneralResult filterInvoices(int page, int size, String companyName, String plate, BigDecimal minTotalAmount, BigDecimal maxTotalAmount, LocalDate startDate, LocalDate endDate) throws GeneralException {// TODO bigdecimeal
+    public GeneralResult filterInvoices(int page, int size, String companyName, String plate, BigDecimal minTotalAmount, BigDecimal maxTotalAmount, LocalDate startDate, LocalDate endDate) throws GeneralException {
         InvoicesDtoResponse result = new InvoicesDtoResponse();
 
         if ((page - 1) < 0) {

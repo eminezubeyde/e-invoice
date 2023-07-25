@@ -6,6 +6,7 @@ import com.example.einvoice.core.requests.create.CreateCompanyRequest;
 import com.example.einvoice.core.requests.update.UpdateCompanyRequest;
 import com.example.einvoice.core.result.GeneralResult;
 import com.example.einvoice.service.CompanyService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,7 @@ public class CompanyController {
     private final CompanyService companyService;
 
     @PostMapping
-    public GeneralResult create(@RequestBody CreateCompanyRequest createCompanyRequest) throws AlreadyExistsException, EntityNotFoundException {
+    public GeneralResult create(@Valid @RequestBody CreateCompanyRequest createCompanyRequest) throws AlreadyExistsException, EntityNotFoundException {
         return companyService.create(createCompanyRequest);
     }
 
