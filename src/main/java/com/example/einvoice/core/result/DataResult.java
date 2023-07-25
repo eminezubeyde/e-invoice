@@ -17,4 +17,8 @@ public class DataResult <T> extends GeneralResult{
         this.data = data;
     }
 
+    public DataResult(String message, Boolean isSuccessful, T data) {
+        super(message, isSuccessful);
+        this.data = data;
+    }
 }

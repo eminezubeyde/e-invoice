@@ -6,6 +6,7 @@ import com.example.einvoice.core.requests.create.CreateDriverRequest;
 import com.example.einvoice.core.requests.update.UpdateDriverRequest;
 import com.example.einvoice.core.result.GeneralResult;
 import com.example.einvoice.service.DriverService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,7 @@ public class DriverController {
    private final DriverService driverService;
 
     @PostMapping
-    public GeneralResult create(@RequestBody CreateDriverRequest createDriverRequest) throws AlreadyExistsException, EntityNotFoundException {
+    public GeneralResult create(@Valid @RequestBody CreateDriverRequest createDriverRequest) throws AlreadyExistsException, EntityNotFoundException {
         return driverService.create(createDriverRequest);
     }
     @PutMapping

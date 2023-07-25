@@ -32,6 +32,9 @@ public class CompanyServiceImpl implements CompanyService {
         if (companyRepository.existsByTaxNumber(createCompanyRequest.getTaxNumber())) {
             throw new AlreadyExistsException(CompanyMessage.ALREADY_EXISTS.toString());
         }
+        if (companyRepository.existsByName(createCompanyRequest.getName())) {
+            throw new AlreadyExistsException(CompanyMessage.ALREADY_EXISTS.toString());
+        }
 
         Company company = CompanyMapper.MAPPER.requestToEntity(createCompanyRequest);
         Contact contact = ContactMapper.MAPPER.requestToEntity(createCompanyRequest.getContactRequest());

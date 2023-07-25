@@ -1,6 +1,8 @@
 package com.example.einvoice.core.requests.create;
 
 import com.example.einvoice.core.requests.create.CreateContactRequest;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +11,8 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class CreateDriverRequest {
+
+    @NotBlank(message = "{e.invoice.username.cannot.be.null.message}")
     private String name;
     private String surname;
     private String identityNumber;
