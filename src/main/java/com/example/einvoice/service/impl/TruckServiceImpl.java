@@ -1,5 +1,6 @@
 package com.example.einvoice.service.impl;
 
+import com.example.einvoice.core.exception.AlreadyExistsException;
 import com.example.einvoice.core.exception.EntityNotFoundException;
 import com.example.einvoice.core.mapper.TruckMapper;
 import com.example.einvoice.core.message.TruckMessage;
@@ -20,7 +21,10 @@ import java.util.List;
 public class TruckServiceImpl implements TruckService {
     private final TruckRepository truckRepository;
     @Override
-    public GeneralResult create(CreateTruckRequest createTruckRequest) {
+    public GeneralResult create(CreateTruckRequest createTruckRequest) throws AlreadyExistsException {
+        if(truckRepository.existsByPlate(createTruckRequest.getPlate())){
+            throw new AlreadyExistsException(TruckMessage.ALREADY_EXISTS.toString());
+        }
         Truck truck= TruckMapper.MAPPER.requestToEntity(createTruckRequest);
         truckRepository.save(truck);
         TruckDto truckResponse=TruckMapper.MAPPER.entityToResponse(truck);
