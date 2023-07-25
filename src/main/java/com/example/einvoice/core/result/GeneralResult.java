@@ -16,9 +16,5 @@ public class GeneralResult {
     public GeneralResult(String message) {
         this.message = message;
     }
-    public boolean isSuccess() {
-        return true;
-    }
-
 
 }

@@ -14,6 +14,7 @@ public class InvoicesDtoResponse {
     private BigDecimal totalAmount;
     private int currentPage;
     private int totalPage;
+    private int invoiceCount;
 
 }
 // TODO toplamda 100 fatura var

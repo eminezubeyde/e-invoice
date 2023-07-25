@@ -3,6 +3,7 @@ package com.example.einvoice.service.impl;
 import com.example.einvoice.core.dto.InvoiceDto;
 import com.example.einvoice.core.dto.InvoicesDtoResponse;
 import com.example.einvoice.core.exception.EntityNotFoundException;
+import com.example.einvoice.core.exception.GeneralException;
 import com.example.einvoice.core.mapper.InvoiceMapper;
 import com.example.einvoice.core.message.CompanyMessage;
 import com.example.einvoice.core.message.FilterMessage;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -103,9 +105,10 @@ public class FilterServiceImpl implements FilterService {
         return new DataResult<>(dtos);
     }
 
+
     @Override
     public GeneralResult getInvoicesByTruckPlateAndMonth(String plate, LocalDateTime startDate, LocalDateTime endDate) throws EntityNotFoundException {
-        InvoicesDtoResponse result=new InvoicesDtoResponse();
+        InvoicesDtoResponse result = new InvoicesDtoResponse();
         Truck truck = truckService.getByPlate(plate);
 
         if (truck == null) {
@@ -131,67 +134,103 @@ public class FilterServiceImpl implements FilterService {
         result.setCurrentPage(1);
         BigDecimal totalAmount = filteredInvoices.stream()
                 .map(Invoice::getTotalAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);//TODO BİR KAÇ SONUCU NASIL GÖNDEREBİLİRİM
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
         result.setTotalAmount(totalAmount);
 
         return new DataResult<>("successful", invoiceDtos);
     }
 
-    @Override
-    public GeneralResult filterInvoices(int page, int size, String companyName, String plate, LocalDate startDate, LocalDate endDate) throws EntityNotFoundException {// TODO bigdecimeal
-        InvoicesDtoResponse result=new InvoicesDtoResponse();
+    // buraya kadar yapılan ve daha da farklı değişkenlerle tüm filtreleme işleminin tek metoda dönüştürülmüş hali
 
-        if((page-1)<0){
-            throw new EntityNotFoundException("sayfa sayısı geçersiz.");
+    @Override
+    public GeneralResult filterInvoices(int page, int size, String companyName, String plate, BigDecimal minTotalAmount, BigDecimal maxTotalAmount, LocalDate startDate, LocalDate endDate) throws GeneralException {// TODO bigdecimeal
+        InvoicesDtoResponse result = new InvoicesDtoResponse();
+
+        if ((page - 1) < 0) {
+            throw new GeneralException(FilterMessage.PAGE_COUNT_INVALID.toString());
         }
         // 1. durum start date < end date
-        PageRequest pageRequest = PageRequest.of((page-1), size);
+        PageRequest pageRequest = PageRequest.of((page - 1), size);
 
-        checkDateIsValid(startDate,endDate);
+        checkDateIsValid(startDate, endDate);
 
-        if(startDate==null && endDate==null){
-            var now =LocalDateTime.now();
-            startDate= LocalDate.from(LocalDateTime.of(now.getYear(),(now.getMonth().getValue()-1),now.getDayOfMonth(),now.getHour(),now.getMinute()));
-            endDate=LocalDate.from(LocalDateTime.of(startDate.getYear(),(startDate.getMonth().getValue()+1),startDate.getDayOfMonth(),now.getHour(),now.getMinute()));
-        }else{
-            if(startDate==null){
-                startDate= LocalDate.from(LocalDateTime.of(endDate.getYear(),(endDate.getMonth().getValue()-1),endDate.getDayOfMonth(),0,0));
-            }
-            if(endDate==null){
-                endDate=LocalDate.from(LocalDateTime.of(startDate.getYear(),(startDate.getMonth().getValue()+1),startDate.getDayOfMonth(),0,0));
-            }
+        createDateHelper(startDate, endDate);
+
+
+        List<Invoice> invoices = new ArrayList<>();
+
+        if (companyName != null) {
+            invoices = invoiceRepository
+                    .findByProcessTimeBetweenAndCompanyName(startDate.atTime(23, 59)
+                            , endDate.atTime(23, 59), pageRequest, companyName);
+
+        } else if (plate != null) {
+            invoices = invoiceRepository
+                    .findByProcessTimeBetweenAndTruckPlate(startDate.atTime(23, 59)
+                            , endDate.atTime(23, 59), pageRequest, plate);
+
+        } else if (minTotalAmount != null && minTotalAmount.compareTo(BigDecimal.ZERO) > 0) {
+            invoices = invoiceRepository.findByTotalAmountGreaterThan(minTotalAmount);
+
+        } else if (plate != null && companyName != null) {
+            invoices = invoiceRepository.findByProcessTimeBetweenAndTruckPlateAndCompanyName(startDate.atTime(23, 59)
+                    , endDate.atTime(23, 59), pageRequest, companyName, plate);
+
+        } else if (maxTotalAmount != null && maxTotalAmount.compareTo(BigDecimal.ZERO) > 0) {
+            invoices = invoiceRepository.findByTotalAmountLessThan(maxTotalAmount);
+
         }
 
 
+        BigDecimal totalAmountOfInvoices = invoices.stream()
+                .map(Invoice::getTotalAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        List <Invoice> invoices=companyName !=null ? // TODO helper sınıfa gönder ve son zamanı ayarla
-                invoiceRepository.findByProcessTimeBetweenAndCompanyName(startDate.atTime(23,59),endDate.atTime(23,59),pageRequest,companyName)
-                : invoiceRepository.findByProcessTimeBetween(startDate.atStartOfDay(),endDate.atStartOfDay(),pageRequest);
 
         List<InvoiceDto> invoiceDtos = invoices
                 .stream()
                 .map(InvoiceMapper.MAPPER::entityToDto)
                 .toList();
 
+
         result.setInvoiceDtos(invoiceDtos);
-        result.setCurrentPage(page+1);
-        long totalCount = invoiceRepository.count(); // tODO düzgün çalışmaz.
-        result.setTotalPage((int) (totalCount/size));
+        result.setCurrentPage(page + 1);//geçerli sayfa
+        result.setInvoiceCount(invoices.size());
+        //int totalCount = (int) invoiceRepository.count(); // tODO düzgün çalışmaz.kontrol yap
+        result.setTotalPage((invoices.size()) / size);//toplam sayfa
+        result.setTotalAmount(totalAmountOfInvoices);
 
-        BigDecimal totalAmount = invoiceDtos.stream()
-                .map(InvoiceDto::getTotalAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        result.setTotalAmount(totalAmount);
-        return new DataResult<>("successful", result);
+        return new DataResult<>(FilterMessage.SUCCESSFUL.toString(), true, result);
     }
 
-    private void checkDateIsValid(LocalDate startDate, LocalDate endDate) throws EntityNotFoundException {
-        if(startDate!=null && endDate!=null){
-            if(!startDate.isEqual(endDate) && endDate.isBefore(startDate)){
-                throw new EntityNotFoundException("bitiş tarihi başlangıç tarihinden sonra olmalıdır.");
+    private void checkDateIsValid(LocalDate startDate, LocalDate endDate) throws GeneralException {
+        if (startDate != null && endDate != null) {
+            if (!startDate.isEqual(endDate) && endDate.isBefore(startDate)) {
+                throw new GeneralException(FilterMessage.INVALID_DATE.toString());
             }
-        }// todo end date bugunden sonra olursa hata
+            if (endDate.isAfter(LocalDate.now())) {
+                throw new GeneralException(FilterMessage.BAD_REQUEST.toString());
+            }
+        }
 
 
     }
+
+    private void createDateHelper(LocalDate startDate, LocalDate endDate) {
+        if (startDate == null && endDate == null) {
+            var now = LocalDateTime.now();
+            startDate = LocalDate.from(LocalDateTime.of(now.getYear(), (now.getMonth().getValue() - 1), now.getDayOfMonth(), now.getHour(), now.getMinute()));
+            endDate = LocalDate.from(LocalDateTime.of(startDate.getYear(), (startDate.getMonth().getValue() + 1), startDate.getDayOfMonth(), now.getHour(), now.getMinute()));
+        } else {
+            if (startDate == null) {
+                startDate = LocalDate.from(LocalDateTime.of(endDate.getYear(), (endDate.getMonth().getValue() - 1), endDate.getDayOfMonth(), 0, 0));
+            }
+            if (endDate == null) {
+                endDate = LocalDate.from(LocalDateTime.of(startDate.getYear(), (startDate.getMonth().getValue() + 1), startDate.getDayOfMonth(), 0, 0));
+            }
+        }
+
+    }
+
+
 }

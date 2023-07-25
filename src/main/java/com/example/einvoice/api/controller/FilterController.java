@@ -1,6 +1,7 @@
 package com.example.einvoice.api.controller;
 
 import com.example.einvoice.core.exception.EntityNotFoundException;
+import com.example.einvoice.core.exception.GeneralException;
 import com.example.einvoice.core.result.GeneralResult;
 import com.example.einvoice.service.FilterService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -56,9 +58,11 @@ public class FilterController {
                                              @RequestParam(defaultValue = "10", required = false) int size,
                                              @RequestParam(name = "companyName", required = false) String companyName,
                                              @RequestParam(name = "plate", required = false) String plate,
+                                             @RequestParam(name="minTotalAmount",required = false) BigDecimal minTotalAmount,
+                                             @RequestParam(name="maxTotalAmount",required = false) BigDecimal maxTotalAmount,
                                              @RequestParam(name = "startDate", required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate startDate,
-                                             @RequestParam(name = "endDate", required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate endDate) throws EntityNotFoundException {
-        return filterService.filterInvoices(page, size, companyName, plate, startDate, endDate);
+                                             @RequestParam(name = "endDate", required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate endDate) throws GeneralException {
+        return filterService.filterInvoices(page, size, companyName, plate,minTotalAmount,maxTotalAmount, startDate, endDate);
     }
 
 
