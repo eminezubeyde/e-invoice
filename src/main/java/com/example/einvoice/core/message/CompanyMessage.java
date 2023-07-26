@@ -1,7 +1,7 @@
 package com.example.einvoice.core.message;
 
 public enum CompanyMessage {
-    NOT_FOUND("companyMessage.NOT_FOUND"),
+    NOT_FOUND("companyMessage.NOT_FOUND"),// companyMessage.error.NOT_FOUND
     ALREADY_EXISTS("companyMessage.ALREADY_EXISTS"),
     SUCCESSFUL("companyMessage.SUCCESSFUL");
 

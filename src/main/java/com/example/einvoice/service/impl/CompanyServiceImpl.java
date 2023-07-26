@@ -56,7 +56,10 @@ public class CompanyServiceImpl implements CompanyService {
         Company company = companyRepository
                 .findById(companyId)
                 .orElseThrow(() -> new EntityNotFoundException(getMessage(CompanyMessage.NOT_FOUND.getKey())));
-        setUpdateCompanyRequestToEntity(updateCompanyRequest, company);
+
+        company.setName(updateCompanyRequest.getName());
+        company.setTaxNumber(updateCompanyRequest.getTaxNumber());
+
         companyRepository.save(company);
         CompanyDto companyDto = CompanyMapper.MAPPER.entityToResponse(company);
         return new DataResult<>(getMessage(CompanyMessage.SUCCESSFUL.getKey()),true,companyDto);
@@ -111,9 +114,9 @@ public class CompanyServiceImpl implements CompanyService {
 
     }
 
-    private String getMessage(String key) {
+    private String getMessage(String key,String ...args) {
         Locale locale = LocaleContextHolder.getLocale();
-        return messageSource.getMessage(key, null, locale);
+        return messageSource.getMessage(key,new Object[]{args}, locale);
     }
 
 }

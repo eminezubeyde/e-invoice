@@ -22,6 +22,7 @@ import com.example.einvoice.service.DriverService;
 import com.example.einvoice.service.TruckService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
@@ -31,12 +32,12 @@ import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
+@Setter
 public class DriverServiceImpl implements DriverService {
-    private final DriverRepository driverRepository;
-    private final TruckService truckService;
-    private final ContactRepository contactRepository;
-    private final ContactService contactService;
-    private final MessageSource messageSource;
+    private  DriverRepository driverRepository;
+    private  TruckService truckService;
+    private  ContactService contactService;
+    private  MessageSource messageSource;
 
     @Override
     @Transactional

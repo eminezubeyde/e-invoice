@@ -38,6 +38,7 @@ public class FilterServiceImpl implements FilterService {
     private final CompanyService companyService;
     private final InvoiceRepository invoiceRepository;
     private final MessageSource messageSource;
+
     @Override
     public GeneralResult getTotalAmountOfInvoicesByMonthAndCompany(String companyName, LocalDateTime month) throws EntityNotFoundException {
         Company company = companyService.getByCompanyName(companyName);
@@ -83,7 +84,7 @@ public class FilterServiceImpl implements FilterService {
                 .map(InvoiceMapper.MAPPER::entityToDto)
                 .toList();
 
-        return new DataResult<>(getMessage(FilterMessage.SUCCESSFUL.getKey()),true,dtos);
+        return new DataResult<>(getMessage(FilterMessage.SUCCESSFUL.getKey()), true, dtos);
     }
 
     @Override
@@ -104,7 +105,7 @@ public class FilterServiceImpl implements FilterService {
                 .map(InvoiceMapper.MAPPER::entityToDto)
                 .toList();
 
-        return new DataResult<>(getMessage(FilterMessage.SUCCESSFUL.getKey()),true,dtos);
+        return new DataResult<>(getMessage(FilterMessage.SUCCESSFUL.getKey()), true, dtos);
     }
 
 
@@ -139,7 +140,7 @@ public class FilterServiceImpl implements FilterService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         result.setTotalAmount(totalAmount);
 
-        return new DataResult<>(getMessage(FilterMessage.SUCCESSFUL.getKey()),true, invoiceDtos);
+        return new DataResult<>(getMessage(FilterMessage.SUCCESSFUL.getKey()), true, invoiceDtos);
     }
 
     // buraya kadar yapılan ve daha da farklı değişkenlerle tüm filtreleme işleminin tek metoda dönüştürülmüş hali
@@ -156,33 +157,51 @@ public class FilterServiceImpl implements FilterService {
 
         checkDateIsValid(startDate, endDate);
 
-        createDateHelper(startDate, endDate);
-
-
-        List<Invoice> invoices = new ArrayList<>();
-
-        if (companyName != null) {
-            invoices = invoiceRepository
-                    .findByProcessTimeBetweenAndCompanyName(startDate.atTime(23, 59)
-                            , endDate.atTime(23, 59), pageRequest, companyName);
-
-        } else if (plate != null) {
-            invoices = invoiceRepository
-                    .findByProcessTimeBetweenAndTruckPlate(startDate.atTime(23, 59)
-                            , endDate.atTime(23, 59), pageRequest, plate);
-
-        } else if (minTotalAmount != null && minTotalAmount.compareTo(BigDecimal.ZERO) > 0) {
-            invoices = invoiceRepository.findByTotalAmountGreaterThan(minTotalAmount);
-
-        } else if (plate != null && companyName != null) {
-            invoices = invoiceRepository.findByProcessTimeBetweenAndTruckPlateAndCompanyName(startDate.atTime(23, 59)
-                    , endDate.atTime(23, 59), pageRequest, companyName, plate);
-
-        } else if (maxTotalAmount != null && maxTotalAmount.compareTo(BigDecimal.ZERO) > 0) {
-            invoices = invoiceRepository.findByTotalAmountLessThan(maxTotalAmount);
-
+        if (startDate == null && endDate == null) {
+            var now = LocalDateTime.now();
+            startDate = LocalDate.from(LocalDateTime.of(now.getYear(), (now.getMonth().getValue() - 1), now.getDayOfMonth(), now.getHour(), now.getMinute()));
+            endDate = LocalDate.from(LocalDateTime.of(startDate.getYear(), (startDate.getMonth().getValue() + 1), startDate.getDayOfMonth(), now.getHour(), now.getMinute()));
+        } else {
+            if (startDate == null) {
+                startDate = LocalDate.from(LocalDateTime.of(endDate.getYear(), (endDate.getMonth().getValue() - 1), endDate.getDayOfMonth(), 0, 0));
+            }
+            if (endDate == null) {
+                endDate = LocalDate.from(LocalDateTime.of(startDate.getYear(), (startDate.getMonth().getValue() + 1), startDate.getDayOfMonth(), 0, 0));
+            }
         }
 
+
+       /* String customQuery = "";
+        if (companyName != null) {
+            customQuery += "and company_name = " + companyName;
+            // invoices = invoiceRepository.findByProcessTimeBetweenAndCompanyName(startDate.atTime(23, 59), endDate.atTime(23, 59), pageRequest, companyName);
+
+        } else if (plate != null) {
+            customQuery += "and plate =" + plate;
+            //invoices = invoiceRepository.findByProcessTimeBetweenAndTruckPlate(startDate.atTime(23, 59), endDate.atTime(23, 59), pageRequest, plate);
+
+        } else if (minTotalAmount != null && minTotalAmount.compareTo(BigDecimal.ZERO) > 0) {
+            customQuery += "and  total_amount > :" + minTotalAmount;
+            // invoices = invoiceRepository.findByTotalAmountGreaterThan(minTotalAmount);
+
+        } else if (plate != null && companyName != null) {
+            // invoices = invoiceRepository.findByProcessTimeBetweenAndTruckPlateAndCompanyName(startDate.atTime(23, 59), endDate.atTime(23, 59), pageRequest, companyName, plate);
+
+        } else if (maxTotalAmount != null && maxTotalAmount.compareTo(BigDecimal.ZERO) > 0) {
+            customQuery += "and  total_amount < :" + maxTotalAmount;
+            //invoices = invoiceRepository.findByTotalAmountLessThan(maxTotalAmount);
+        }
+        */
+
+        List<Invoice> invoices = invoiceRepository
+                .invoicesFilter(startDate.atTime(23, 59), endDate.atTime(23, 59), companyName,
+                        plate, minTotalAmount, maxTotalAmount, pageRequest);
+
+
+        if (invoices.isEmpty()) {
+            throw new GeneralException("Sorgu sonucunda herhangi bir değer bulunamadı.");
+
+        }
 
         BigDecimal totalAmountOfInvoices = invoices.stream()
                 .map(Invoice::getTotalAmount)
@@ -194,12 +213,16 @@ public class FilterServiceImpl implements FilterService {
                 .map(InvoiceMapper.MAPPER::entityToDto)
                 .toList();
 
-
+        int invoiceSize=invoices.size();
         result.setInvoiceDtos(invoiceDtos);
-        result.setCurrentPage(page + 1);//geçerli sayfa
-        result.setInvoiceCount(invoices.size());
-        //int totalCount = (int) invoiceRepository.count(); // tODO düzgün çalışmaz.kontrol yap
-        result.setTotalPage((invoices.size()) / size);//toplam sayfa
+        result.setCurrentPage(page);//geçerli sayfa
+        result.setInvoiceCount(invoiceSize);
+        int totalCount = (int) invoiceRepository.count(); // tODO düzgün çalışmaz.kontrol yap
+        if (invoices.size() >= size) {
+            result.setTotalPage(invoiceSize / size);//toplam sayfa
+        } else {
+            result.setTotalPage(1);
+        }
         result.setTotalAmount(totalAmountOfInvoices);
 
         return new DataResult<>(FilterMessage.SUCCESSFUL.toString(), true, result);
@@ -218,7 +241,7 @@ public class FilterServiceImpl implements FilterService {
 
     }
 
-    private void createDateHelper(LocalDate startDate, LocalDate endDate) {
+    private void initDate(LocalDate startDate, LocalDate endDate) {
         if (startDate == null && endDate == null) {
             var now = LocalDateTime.now();
             startDate = LocalDate.from(LocalDateTime.of(now.getYear(), (now.getMonth().getValue() - 1), now.getDayOfMonth(), now.getHour(), now.getMinute()));
@@ -233,9 +256,10 @@ public class FilterServiceImpl implements FilterService {
         }
 
     }
+
     private String getMessage(String key) {
         Locale locale = LocaleContextHolder.getLocale();
-        return messageSource.getMessage(key,null,locale);
+        return messageSource.getMessage(key, null, locale);
     }
 
 
