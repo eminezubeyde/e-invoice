@@ -1,8 +1,6 @@
 package com.example.einvoice.service.impl;
 
-import com.example.einvoice.config.MessageConfig;
 import com.example.einvoice.core.mapper.ContactMapper;
-import com.example.einvoice.core.message.CompanyMessage;
 import com.example.einvoice.core.message.ContactMessage;
 import com.example.einvoice.core.dto.ContactDto;
 import com.example.einvoice.core.requests.update.UpdateContactRequest;
@@ -28,8 +26,8 @@ import java.util.Locale;
 @RequiredArgsConstructor
 @Setter
 public class ContactServiceImpl implements ContactService {
-    private  ContactRepository contactRepository;
-    private  MessageSource messageSource;
+    private final ContactRepository contactRepository;
+    private final MessageSource messageSource;
     private  DriverService driverService;
     private  CompanyService companyService;
 

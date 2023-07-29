@@ -4,5 +4,5 @@ import com.example.einvoice.entity.Driver;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DriverRepository extends JpaRepository<Driver,Integer> {
-    boolean existsByIdentityNumber(String identityNumber);
+    boolean existsByIdentity(String identityNumber);
 }

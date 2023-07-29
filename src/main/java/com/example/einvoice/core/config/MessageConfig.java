@@ -1,4 +1,4 @@
-package com.example.einvoice.config;
+package com.example.einvoice.core.config;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;

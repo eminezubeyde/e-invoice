@@ -24,6 +24,8 @@ public class CreateDriverRequest {
     @Pattern(regexp = "^[0-9]{11}$", message = "{driver.validation.identityNumber.invalidFormat}")
     private String identityNumber;
 
+    private String password;
+
     @Positive(message = "{driver.validation.salary.positive}")
     private BigDecimal salary;
 

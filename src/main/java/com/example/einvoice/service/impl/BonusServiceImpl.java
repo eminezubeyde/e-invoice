@@ -1,6 +1,5 @@
 package com.example.einvoice.service.impl;
 
-import com.example.einvoice.config.MessageConfig;
 import com.example.einvoice.core.dto.BonusDto;
 import com.example.einvoice.core.exception.EntityNotFoundException;
 import com.example.einvoice.core.mapper.BonusMapper;

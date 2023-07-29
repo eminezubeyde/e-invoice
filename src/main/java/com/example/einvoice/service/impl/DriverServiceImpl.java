@@ -5,7 +5,6 @@ import com.example.einvoice.core.exception.AlreadyExistsException;
 import com.example.einvoice.core.exception.EntityNotFoundException;
 import com.example.einvoice.core.mapper.ContactMapper;
 import com.example.einvoice.core.mapper.DriverMapper;
-import com.example.einvoice.core.message.CompanyMessage;
 import com.example.einvoice.core.message.DriverMessage;
 import com.example.einvoice.core.message.TruckMessage;
 import com.example.einvoice.core.requests.create.CreateDriverRequest;
@@ -15,7 +14,6 @@ import com.example.einvoice.core.result.GeneralResult;
 import com.example.einvoice.entity.Contact;
 import com.example.einvoice.entity.Driver;
 import com.example.einvoice.entity.Truck;
-import com.example.einvoice.repository.ContactRepository;
 import com.example.einvoice.repository.DriverRepository;
 import com.example.einvoice.service.ContactService;
 import com.example.einvoice.service.DriverService;
@@ -25,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,15 +33,16 @@ import java.util.Locale;
 @RequiredArgsConstructor
 @Setter
 public class DriverServiceImpl implements DriverService {
-    private  DriverRepository driverRepository;
-    private  TruckService truckService;
-    private  ContactService contactService;
-    private  MessageSource messageSource;
+    private final DriverRepository driverRepository;
+    private final TruckService truckService;
+    private final ContactService contactService;
+    private final MessageSource messageSource;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
     public GeneralResult create(CreateDriverRequest createDriverRequest) throws AlreadyExistsException, EntityNotFoundException {
-        if (driverRepository.existsByIdentityNumber(createDriverRequest.getIdentityNumber())) {
+        if (driverRepository.existsByIdentity(createDriverRequest.getIdentityNumber())) {
             throw new AlreadyExistsException(getMessage(DriverMessage.ALREADY_EXISTS.getKey()));
         }
         Truck truck = truckService.findById(createDriverRequest.getTruckId());
@@ -52,7 +52,7 @@ public class DriverServiceImpl implements DriverService {
         }
 
         Driver driver = DriverMapper.MAPPER.requestToEntity(createDriverRequest);
-
+        driver.setPassword(passwordEncoder.encode(createDriverRequest.getPassword()));
         Contact contact = ContactMapper.MAPPER.requestToEntity(createDriverRequest.getContact());
         contactService.create(contact);
         driver.setContact(contact);
