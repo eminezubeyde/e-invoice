@@ -1,10 +1,8 @@
 package com.example.einvoice.service.impl;
 
-import com.example.einvoice.config.MessageConfig;
 import com.example.einvoice.core.exception.EntityNotFoundException;
 import com.example.einvoice.core.mapper.ContactMapper;
-import com.example.einvoice.core.message.CompanyMessage;
-import com.example.einvoice.core.message.ContactMessage;
+import com.example.einvoice.core.constant.message.ContactMessage;
 import com.example.einvoice.core.dto.ContactDto;
 import com.example.einvoice.core.requests.update.UpdateContactRequest;
 import com.example.einvoice.core.result.DataResult;
@@ -16,6 +14,7 @@ import com.example.einvoice.service.ContactService;
 import com.example.einvoice.service.DriverService;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
@@ -28,10 +27,11 @@ import java.util.Locale;
 @RequiredArgsConstructor
 @Setter
 public class ContactServiceImpl implements ContactService {
-    private  ContactRepository contactRepository;
-    private  MessageSource messageSource;
-    private  DriverService driverService;
-    private  CompanyService companyService;
+    private final ContactRepository contactRepository;
+    private final MessageSource messageSource;
+
+
+
 
     @Override
     public GeneralResult create(Contact contact) {

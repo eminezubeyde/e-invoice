@@ -1,4 +1,4 @@
-package com.example.einvoice.core.message;
+package com.example.einvoice.core.constant.message;
 
 public enum CompanyMessage {
     NOT_FOUND("companyMessage.NOT_FOUND"),// companyMessage.error.NOT_FOUND

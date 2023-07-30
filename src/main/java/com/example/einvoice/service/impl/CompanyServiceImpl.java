@@ -4,7 +4,7 @@ import com.example.einvoice.core.exception.AlreadyExistsException;
 import com.example.einvoice.core.exception.EntityNotFoundException;
 import com.example.einvoice.core.mapper.CompanyMapper;
 import com.example.einvoice.core.mapper.ContactMapper;
-import com.example.einvoice.core.message.CompanyMessage;
+import com.example.einvoice.core.constant.message.CompanyMessage;
 import com.example.einvoice.core.requests.create.CreateCompanyRequest;
 import com.example.einvoice.core.dto.CompanyDto;
 import com.example.einvoice.core.requests.update.UpdateCompanyRequest;
@@ -16,6 +16,7 @@ import com.example.einvoice.repository.CompanyRepository;
 import com.example.einvoice.service.CompanyService;
 import com.example.einvoice.service.ContactService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
@@ -28,8 +29,12 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
-    private final ContactService contactService;
+    private ContactService contactService;
     private final MessageSource messageSource;
+    @Autowired
+    public void setContactService(ContactService contactService) {
+        this.contactService = contactService;
+    }
 
     @Override
     public GeneralResult create(CreateCompanyRequest createCompanyRequest) throws AlreadyExistsException, EntityNotFoundException {

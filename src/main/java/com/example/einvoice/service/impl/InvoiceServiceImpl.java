@@ -1,9 +1,9 @@
 package com.example.einvoice.service.impl;
 
+import com.example.einvoice.core.constant.message.InvoiceMessage;
 import com.example.einvoice.core.dto.InvoiceDto;
 import com.example.einvoice.core.exception.EntityNotFoundException;
 import com.example.einvoice.core.mapper.InvoiceMapper;
-import com.example.einvoice.core.message.InvoiceMessage;
 import com.example.einvoice.core.requests.create.CreateInvoiceRequest;
 import com.example.einvoice.core.result.DataResult;
 import com.example.einvoice.core.result.GeneralResult;
@@ -44,7 +44,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoice.setCompany(company);
         invoiceRepository.save(invoice);
         InvoiceDto invoiceDto = InvoiceMapper.MAPPER.entityToDto(invoice);
-        return new DataResult<>(getMessage(InvoiceMessage.SUCCESSFUL.getKey()),true,invoiceDto);
+        return new DataResult<>(getMessage(InvoiceMessage.SUCCESSFUL.getKey()), true, invoiceDto);
     }
 
 
@@ -55,7 +55,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                 .stream()
                 .map(InvoiceMapper.MAPPER::entityToDto)
                 .toList();
-        return new DataResult<>(getMessage(InvoiceMessage.SUCCESSFUL.getKey()),true, invoiceDtos);
+        return new DataResult<>(getMessage(InvoiceMessage.SUCCESSFUL.getKey()), true, invoiceDtos);
     }
 
     @Override

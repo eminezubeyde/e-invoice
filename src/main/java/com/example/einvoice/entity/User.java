@@ -5,12 +5,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
+@Entity
 @Table(name = "users")
 @RequiredArgsConstructor
-@MappedSuperclass
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,4 +22,8 @@ public class User {
     private String identityNumber;
     @OneToOne(cascade = CascadeType.ALL,orphanRemoval = true)
     private Contact contact;
+    private String password;
+
+    @OneToMany(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
+    private List<Role> roles;
 }

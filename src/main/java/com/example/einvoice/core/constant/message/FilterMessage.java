@@ -1,4 +1,4 @@
-package com.example.einvoice.core.message;
+package com.example.einvoice.core.constant.message;
 
     public enum FilterMessage {
         NOT_FOUND("filterMessage.NOT_FOUND"),

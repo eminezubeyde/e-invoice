@@ -23,6 +23,8 @@ public class CreateDriverRequest {
     @Positive(message = "{driver.validation.salary.positive}")
     private BigDecimal salary;
 
+    private String password;
+
     private CreateContactRequest contact;
     private int truckId;
 }

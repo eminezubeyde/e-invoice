@@ -1,4 +1,4 @@
-package com.example.einvoice.core.message;
+package com.example.einvoice.core.constant.message;
 
 public enum DriverMessage {
     NOT_FOUND("driverMessage.NOT_FOUND"),

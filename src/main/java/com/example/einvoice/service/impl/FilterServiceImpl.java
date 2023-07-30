@@ -1,12 +1,12 @@
 package com.example.einvoice.service.impl;
 
+import com.example.einvoice.core.constant.message.FilterMessage;
+import com.example.einvoice.core.constant.message.TruckMessage;
 import com.example.einvoice.core.dto.InvoiceDto;
 import com.example.einvoice.core.dto.InvoicesDtoResponse;
 import com.example.einvoice.core.exception.EntityNotFoundException;
 import com.example.einvoice.core.exception.GeneralException;
 import com.example.einvoice.core.mapper.InvoiceMapper;
-import com.example.einvoice.core.message.FilterMessage;
-import com.example.einvoice.core.message.TruckMessage;
 import com.example.einvoice.core.result.DataResult;
 import com.example.einvoice.core.result.GeneralResult;
 import com.example.einvoice.entity.Company;
@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -213,7 +212,7 @@ public class FilterServiceImpl implements FilterService {
                 .map(InvoiceMapper.MAPPER::entityToDto)
                 .toList();
 
-        int invoiceSize=invoices.size();
+        int invoiceSize = invoices.size();
         result.setInvoiceDtos(invoiceDtos);
         result.setCurrentPage(page);//geçerli sayfa
         result.setInvoiceCount(invoiceSize);
