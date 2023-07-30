@@ -1,10 +1,8 @@
 package com.example.einvoice.service.impl;
 
-import com.example.einvoice.config.MessageConfig;
 import com.example.einvoice.core.dto.InvoiceDto;
 import com.example.einvoice.core.exception.EntityNotFoundException;
 import com.example.einvoice.core.mapper.InvoiceMapper;
-import com.example.einvoice.core.message.CompanyMessage;
 import com.example.einvoice.core.message.InvoiceMessage;
 import com.example.einvoice.core.requests.create.CreateInvoiceRequest;
 import com.example.einvoice.core.result.DataResult;
@@ -16,11 +14,11 @@ import com.example.einvoice.repository.InvoiceRepository;
 import com.example.einvoice.service.CompanyService;
 import com.example.einvoice.service.InvoiceService;
 import com.example.einvoice.service.TruckService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;

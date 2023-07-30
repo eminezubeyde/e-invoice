@@ -1,11 +1,10 @@
 package com.example.einvoice.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 

@@ -6,9 +6,10 @@ import com.example.einvoice.core.requests.create.CreateCompanyRequest;
 import com.example.einvoice.core.requests.update.UpdateCompanyRequest;
 import com.example.einvoice.core.result.GeneralResult;
 import com.example.einvoice.service.CompanyService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("api/company")
@@ -32,7 +33,7 @@ public class CompanyController {
     }
 
     @GetMapping
-    public GeneralResult getAll(){
-       return companyService.getAll();
+    public GeneralResult getAll() {
+        return companyService.getAll();
     }
 }

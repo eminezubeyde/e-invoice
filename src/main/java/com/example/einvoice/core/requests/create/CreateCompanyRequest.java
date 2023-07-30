@@ -1,8 +1,10 @@
 package com.example.einvoice.core.requests.create;
 
-import jakarta.validation.constraints.NotBlank;
+
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter

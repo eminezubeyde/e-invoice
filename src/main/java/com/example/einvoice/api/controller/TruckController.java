@@ -5,9 +5,10 @@ import com.example.einvoice.core.exception.EntityNotFoundException;
 import com.example.einvoice.core.requests.create.CreateTruckRequest;
 import com.example.einvoice.core.result.GeneralResult;
 import com.example.einvoice.service.TruckService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/truck")

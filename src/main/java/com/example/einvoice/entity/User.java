@@ -1,9 +1,10 @@
 package com.example.einvoice.entity;
 
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+import javax.persistence.*;
 
 @Getter
 @Setter

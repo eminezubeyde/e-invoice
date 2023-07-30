@@ -1,10 +1,13 @@
 package com.example.einvoice.entity;
 
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import java.math.BigDecimal;
 import java.util.List;
 

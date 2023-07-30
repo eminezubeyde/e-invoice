@@ -1,5 +1,6 @@
 package com.example.einvoice.api.controller;
 
+import com.example.einvoice.core.exception.EntityNotFoundException;
 import com.example.einvoice.core.requests.update.UpdateContactRequest;
 import com.example.einvoice.core.result.GeneralResult;
 import com.example.einvoice.service.ContactService;
@@ -13,7 +14,7 @@ public class ContactController {
     private final ContactService contactService;
 
     @PutMapping
-    public GeneralResult update(@RequestBody UpdateContactRequest updateContactRequest, @RequestParam int contactId) {
+    public GeneralResult update(@RequestBody UpdateContactRequest updateContactRequest, @RequestParam int contactId) throws EntityNotFoundException {
         return contactService.update(updateContactRequest, contactId);
     }
     @GetMapping
@@ -22,7 +23,7 @@ public class ContactController {
     }
 
     @DeleteMapping
-    public void delete(@RequestParam int contactId) {
+    public void delete(@RequestParam int contactId) throws EntityNotFoundException {
         contactService.deleteByID(contactId);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.einvoice.service.impl;
 
 import com.example.einvoice.config.MessageConfig;
+import com.example.einvoice.core.exception.EntityNotFoundException;
 import com.example.einvoice.core.mapper.ContactMapper;
 import com.example.einvoice.core.message.CompanyMessage;
 import com.example.einvoice.core.message.ContactMessage;
@@ -13,13 +14,12 @@ import com.example.einvoice.repository.ContactRepository;
 import com.example.einvoice.service.CompanyService;
 import com.example.einvoice.service.ContactService;
 import com.example.einvoice.service.DriverService;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Locale;
@@ -43,7 +43,7 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     @Transactional
-    public GeneralResult update(UpdateContactRequest updateContactRequest, int contactId) {
+    public GeneralResult update(UpdateContactRequest updateContactRequest, int contactId) throws EntityNotFoundException {
         Contact contact = contactRepository
                 .findById(contactId)
                 .orElseThrow(() -> new EntityNotFoundException(getMessage((ContactMessage.NOT_FOUND.getKey()))));
@@ -66,7 +66,7 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     @Transactional
-    public void deleteByID(int contactId) {
+    public void deleteByID(int contactId) throws EntityNotFoundException {
         Contact contact = contactRepository
                 .findById(contactId)
                 .orElseThrow(() -> new EntityNotFoundException(getMessage((ContactMessage.NOT_FOUND.getKey()))));
@@ -78,7 +78,7 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public void deleteByID(Contact contact) {
+    public void deleteByID(Contact contact) throws EntityNotFoundException {
         Contact contact1 = contactRepository
                 .findById(contact.getId())
                 .orElseThrow(() -> new EntityNotFoundException(getMessage((ContactMessage.NOT_FOUND.getKey()))));
@@ -91,7 +91,7 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public Contact findById(int contactId) {
+    public Contact findById(int contactId) throws EntityNotFoundException {
         return contactRepository
                 .findById(contactId)
                 .orElseThrow(() -> new EntityNotFoundException(getMessage((ContactMessage.NOT_FOUND.getKey()))));

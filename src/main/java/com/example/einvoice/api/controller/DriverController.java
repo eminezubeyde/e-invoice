@@ -6,9 +6,10 @@ import com.example.einvoice.core.requests.create.CreateDriverRequest;
 import com.example.einvoice.core.requests.update.UpdateDriverRequest;
 import com.example.einvoice.core.result.GeneralResult;
 import com.example.einvoice.service.DriverService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/driver")

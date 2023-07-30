@@ -15,11 +15,11 @@ import com.example.einvoice.entity.Contact;
 import com.example.einvoice.repository.CompanyRepository;
 import com.example.einvoice.service.CompanyService;
 import com.example.einvoice.service.ContactService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Locale;
