@@ -20,6 +20,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 @RequiredArgsConstructor
 public class CustomAuthanticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
@@ -39,7 +42,7 @@ public class CustomAuthanticationFilter extends UsernamePasswordAuthenticationFi
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         final String access_token = jwtHelper.generate(authentication.getName(), authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
 
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE); // ->
+        response.setContentType(APPLICATION_JSON_VALUE); // ->
         response.setStatus(200);
 
         Map<String, String> responseData = new HashMap<>();
@@ -47,5 +50,20 @@ public class CustomAuthanticationFilter extends UsernamePasswordAuthenticationFi
         responseData.put("access_token", access_token);
 
         new ObjectMapper().writeValue(response.getOutputStream(), responseData);
+    }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        response.setContentType(APPLICATION_JSON_VALUE); // ->
+        response.setStatus(401);
+
+        Map<String, Object> customResponse = new HashMap<>();
+        customResponse.put("isSuccessful", false);
+        customResponse.put("message", "giriş başarısız");
+        response.setContentType(APPLICATION_JSON_VALUE);
+        response.setStatus(403);
+        new ObjectMapper().writeValue(response.getOutputStream(), customResponse);
+
+
     }
 }
