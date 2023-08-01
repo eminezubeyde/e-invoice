@@ -13,11 +13,6 @@ import org.springframework.web.bind.annotation.*;
 public class BonusController {
     private final BonusService bonusService;
 
-    @PostMapping
-    public GeneralResult create(@RequestBody CreateBonusRequest createBonusRequest) {
-        return bonusService.create(createBonusRequest);
-    }
-
     @GetMapping
     public GeneralResult getAll() {
         return bonusService.getAll();

@@ -53,8 +53,6 @@ public class CompanyServiceImpl implements CompanyService {
         CompanyDto companyDto = CompanyMapper.MAPPER.entityToResponse(company);
         return new DataResult<>(getMessage(CompanyMessage.SUCCESSFUL.getKey()),true,companyDto);
     }
-    //todo contact validasyon nereye eklenecek
-
     @Override
     @Transactional
     public GeneralResult update(UpdateCompanyRequest updateCompanyRequest, int companyId) throws EntityNotFoundException {
@@ -111,13 +109,6 @@ public class CompanyServiceImpl implements CompanyService {
         return companyRepository.findByName(companyName);
     }
 
-
-    private void setUpdateCompanyRequestToEntity(UpdateCompanyRequest updateCompanyRequest, Company company) {
-
-        company.setName(updateCompanyRequest.getName());
-        company.setTaxNumber(updateCompanyRequest.getTaxNumber());
-
-    }
 
     private String getMessage(String key,String ...args) {
         Locale locale = LocaleContextHolder.getLocale();

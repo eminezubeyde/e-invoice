@@ -1,6 +1,7 @@
 package com.example.einvoice.service.impl;
 
 import com.example.einvoice.config.MessageConfig;
+import com.example.einvoice.core.constant.message.DriverMessage;
 import com.example.einvoice.core.dto.BonusDto;
 import com.example.einvoice.core.exception.EntityNotFoundException;
 import com.example.einvoice.core.mapper.BonusMapper;
@@ -23,12 +24,14 @@ import java.util.Locale;
 public class BonusServiceImpl implements BonusService {
     private final BonusRepository bonusRepository;
     private final MessageSource messageSource;
+
     @Override
-    public GeneralResult create(CreateBonusRequest createBonusRequest) {
+    public GeneralResult create(Bonus bonus) {
+        bonusRepository.save(bonus);
+        BonusDto bonusDto = BonusMapper.MAPPER.entityToResponse(bonus);
 
 
-
-        return null;
+        return new DataResult<>(getMessage(DriverMessage.SUCCESSFUL.getKey()), true, bonusDto);
     }
 
     @Override
@@ -49,8 +52,9 @@ public class BonusServiceImpl implements BonusService {
 
         bonusRepository.delete(bonus);
     }
+
     private String getMessage(String key) {
         Locale locale = LocaleContextHolder.getLocale();
-        return messageSource.getMessage(key,null,locale);
+        return messageSource.getMessage(key, null, locale);
     }
 }

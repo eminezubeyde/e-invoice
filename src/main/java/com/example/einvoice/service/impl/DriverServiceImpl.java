@@ -31,6 +31,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -61,8 +62,8 @@ public class DriverServiceImpl implements DriverService {
 
         Driver driver = DriverMapper.MAPPER.requestToEntity(createDriverRequest);
         driver.setPassword(passwordEncoder.encode(createDriverRequest.getPassword()));
-        Optional<Role> role=roleService.getByName(Roles.DRIVER);
-        if(role.isEmpty()){
+        Optional<Role> role = roleService.getByName(Roles.DRIVER);
+        if (role.isEmpty()) {
             // TODO hata fırlat
         }
         driver.setRoles(List.of(role.get()));
@@ -107,6 +108,14 @@ public class DriverServiceImpl implements DriverService {
                 .map(DriverMapper.MAPPER::entityToResponse)
                 .toList();
         return new DataResult<>(getMessage(DriverMessage.SUCCESSFUL.getKey()), true, driverDtoList);
+    }
+
+    @Override
+    public Driver getById(int driverId) throws EntityNotFoundException {
+        Driver driver = driverRepository
+                .findById(driverId)
+                .orElseThrow(() -> new EntityNotFoundException(DriverMessage.NOT_FOUND.toString()));
+        return driver;
     }
 
     @Override

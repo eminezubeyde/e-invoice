@@ -7,13 +7,9 @@ import com.example.einvoice.core.mapper.InvoiceMapper;
 import com.example.einvoice.core.requests.create.CreateInvoiceRequest;
 import com.example.einvoice.core.result.DataResult;
 import com.example.einvoice.core.result.GeneralResult;
-import com.example.einvoice.entity.Company;
-import com.example.einvoice.entity.Invoice;
-import com.example.einvoice.entity.Truck;
+import com.example.einvoice.entity.*;
 import com.example.einvoice.repository.InvoiceRepository;
-import com.example.einvoice.service.CompanyService;
-import com.example.einvoice.service.InvoiceService;
-import com.example.einvoice.service.TruckService;
+import com.example.einvoice.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -31,11 +27,14 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final TruckService truckService;
     private final CompanyService companyService;
     private final MessageSource messageSource;
+    private final DriverService driverService;
+    private final BonusService bonusService;
 
     @Override
     @Transactional
     public GeneralResult create(CreateInvoiceRequest createInvoiceRequest) throws EntityNotFoundException {
         Truck truck = truckService.findById(createInvoiceRequest.getTruckId());
+        Driver driver = driverService.getById(truck.getDriver().getId());
         Company company = companyService.findById(createInvoiceRequest.getCompanyId());
         Invoice invoice = InvoiceMapper.MAPPER.requestToEntity(createInvoiceRequest);
         invoice.setActive(true);
@@ -43,6 +42,16 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoice.setTruck(truck);
         invoice.setCompany(company);
         invoiceRepository.save(invoice);
+
+        Bonus bonus = new Bonus();
+        bonus.setAmount(invoice.getTotalAmount());
+        bonus.setDriver(truck.getDriver());
+        bonus.setFromCity(invoice.getFromCity());
+        bonus.setToCity(invoice.getToCity());
+        bonus.setProcessTime(invoice.getProcessTime());
+        driver.setBonuses(List.of(bonus));
+        bonusService.create(bonus);
+
         InvoiceDto invoiceDto = InvoiceMapper.MAPPER.entityToDto(invoice);
         return new DataResult<>(getMessage(InvoiceMessage.SUCCESSFUL.getKey()), true, invoiceDto);
     }
