@@ -20,7 +20,7 @@ public class Driver extends User {
     @OneToOne
     private Truck truck;
 
-    @OneToMany(mappedBy = "driver",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "driver")
     private List<Bonus> bonuses;
 
 

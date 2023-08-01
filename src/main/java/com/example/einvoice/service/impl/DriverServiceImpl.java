@@ -101,6 +101,7 @@ public class DriverServiceImpl implements DriverService {
 
 
     @Override
+    @Transactional
     public GeneralResult getAll() {
         List<Driver> driverList = driverRepository.findAll();
         List<DriverDto> driverDtoList = driverList

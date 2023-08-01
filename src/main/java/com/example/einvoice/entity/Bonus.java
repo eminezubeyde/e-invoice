@@ -24,7 +24,7 @@ public class Bonus {
     private String toCity; //nereye
     private LocalDateTime processTime;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Driver driver;
 
 }
