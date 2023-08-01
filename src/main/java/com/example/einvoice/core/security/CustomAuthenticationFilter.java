@@ -2,15 +2,12 @@ package com.example.einvoice.core.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -24,10 +21,10 @@ import java.util.stream.Collectors;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequiredArgsConstructor
-public class CustomAuthanticationFilter extends UsernamePasswordAuthenticationFilter {
+public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JWTHelper jwtHelper;
-// login sayfası burası
+    // login sayfası burası
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         String username = request.getParameter("identity");
@@ -40,16 +37,17 @@ public class CustomAuthanticationFilter extends UsernamePasswordAuthenticationFi
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
-        final String access_token = jwtHelper.generate(authentication.getName(), authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
+        final String accessToken = jwtHelper.generate(authentication.getName(), authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
 
         response.setContentType(APPLICATION_JSON_VALUE); // ->
         response.setStatus(200);
 
-        Map<String, String> responseData = new HashMap<>();
+        Map<String, Object> customResponse = new HashMap<>();
+        customResponse.put("isSuccessful", false);
+        customResponse.put("message", "giriş Başarılı");
+        customResponse.put("data", accessToken);
 
-        responseData.put("access_token", access_token);
-
-        new ObjectMapper().writeValue(response.getOutputStream(), responseData);
+        new ObjectMapper().writeValue(response.getOutputStream(), customResponse);
     }
 
     @Override

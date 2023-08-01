@@ -43,7 +43,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
                 } catch (Exception e) {
                     Map<String, Object> customResponse = new HashMap<>();
-                    customResponse.put("isSuccessfull", false);
+                    customResponse.put("isSuccessful", false);
                     customResponse.put("message", e.getMessage());
                     response.setContentType(APPLICATION_JSON_VALUE);
                     response.setStatus(403);

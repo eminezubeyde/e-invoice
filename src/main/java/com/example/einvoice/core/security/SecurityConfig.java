@@ -35,8 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeHttpRequests().anyRequest().authenticated();
 
 
-        CustomAuthanticationFilter customAuthanticationFilter = new CustomAuthanticationFilter(authenticationManagerBean(), jwtHelper);
+        CustomAuthenticationFilter customAuthanticationFilter = new CustomAuthenticationFilter(authenticationManagerBean(), jwtHelper);
         customAuthanticationFilter.setFilterProcessesUrl("/api/login");
+
         http.addFilter(customAuthanticationFilter);
         http.addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
