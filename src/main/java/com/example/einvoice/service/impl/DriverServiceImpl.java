@@ -24,6 +24,7 @@ import com.example.einvoice.service.RoleService;
 import com.example.einvoice.service.TruckService;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -39,6 +40,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Setter
+@Slf4j
 public class DriverServiceImpl implements DriverService {
     private final DriverRepository driverRepository;
     private final TruckService truckService;
@@ -51,12 +53,16 @@ public class DriverServiceImpl implements DriverService {
     @Override
     @Transactional
     public GeneralResult create(CreateDriverRequest createDriverRequest) throws AlreadyExistsException, EntityNotFoundException {
+        log.info("driver create method started with request : " + createDriverRequest);
         if (driverRepository.existsByIdentityNumber(createDriverRequest.getIdentityNumber())) {
+            log.error("driver already exists");
             throw new AlreadyExistsException(getMessage(DriverMessage.ALREADY_EXISTS.getKey()));
+
         }
         Truck truck = truckService.findById(createDriverRequest.getTruckId());
 
         if (truck.getDriver() != null) {
+            log.error("truck already has driver");
             throw new AlreadyExistsException(getMessage(TruckMessage.ALREADY_HAS_DRIVER.getKey()));
         }
 
@@ -64,7 +70,8 @@ public class DriverServiceImpl implements DriverService {
         driver.setPassword(passwordEncoder.encode(createDriverRequest.getPassword()));
         Optional<Role> role = roleService.getByName(Roles.DRIVER);
         if (role.isEmpty()) {
-            // TODO hata fırlat
+            log.error("role not found");
+            throw new EntityNotFoundException(getMessage("role not found"));
         }
         driver.setRoles(List.of(role.get()));
 
@@ -77,7 +84,7 @@ public class DriverServiceImpl implements DriverService {
         driverRepository.save(driver);
 
         DriverDto driverDto = DriverMapper.MAPPER.entityToResponse(driver);
-
+        log.info("create driver ended..");
         return new DataResult<>(getMessage(DriverMessage.SUCCESSFUL.getKey()), true, driverDto);
 
     }
@@ -85,6 +92,7 @@ public class DriverServiceImpl implements DriverService {
     @Override
     @Transactional
     public GeneralResult update(UpdateDriverRequest updateDriverRequest, int driverId) throws EntityNotFoundException, AlreadyExistsException {
+        log.info("driver update method started with request : " + updateDriverRequest);
         Driver driver = driverRepository
                 .findById(driverId)
                 .orElseThrow(() -> new EntityNotFoundException(getMessage(DriverMessage.NOT_FOUND.getKey())));
@@ -92,10 +100,12 @@ public class DriverServiceImpl implements DriverService {
         Truck truck = truckService.findById(updateDriverRequest.getTruckId());
 
         if (truck.getDriver() != null) {
+            log.error("truck already has driver");
             throw new AlreadyExistsException(getMessage(TruckMessage.ALREADY_HAS_DRIVER.getKey()));
         }
         driverRepository.save(driver);
         DriverDto driverDto = DriverMapper.MAPPER.entityToResponse(driver);
+        log.info("update driver ended..");
         return new DataResult<>(getMessage(DriverMessage.SUCCESSFUL.getKey()), true, driverDto);
     }
 
@@ -103,30 +113,36 @@ public class DriverServiceImpl implements DriverService {
     @Override
     @Transactional
     public GeneralResult getAll() {
+        log.info("getAll driver method started" );
         List<Driver> driverList = driverRepository.findAll();
         List<DriverDto> driverDtoList = driverList
                 .stream()
                 .map(DriverMapper.MAPPER::entityToResponse)
                 .toList();
+        log.info("getAll driver method ended..");
         return new DataResult<>(getMessage(DriverMessage.SUCCESSFUL.getKey()), true, driverDtoList);
     }
 
     @Override
     public Driver getById(int driverId) throws EntityNotFoundException {
+        log.info("get driver method started" );
         Driver driver = driverRepository
                 .findById(driverId)
                 .orElseThrow(() -> new EntityNotFoundException(DriverMessage.NOT_FOUND.toString()));
+        log.info("get driver method ended..");
         return driver;
     }
 
     @Override
     @Transactional
     public void delete(int driverId) throws EntityNotFoundException {
+        log.info("delete driver method started");
         Driver driver = driverRepository
                 .findById(driverId)
                 .orElseThrow(() -> new EntityNotFoundException(getMessage(DriverMessage.NOT_FOUND.getKey())));
         Contact contact = driver.getContact();
         contactService.deleteByID(contact);
+        log.info("delete driver method ended..");
         driverRepository.delete(driver);
     }
 

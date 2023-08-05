@@ -11,6 +11,7 @@ import com.example.einvoice.entity.*;
 import com.example.einvoice.repository.InvoiceRepository;
 import com.example.einvoice.service.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class InvoiceServiceImpl implements InvoiceService {
     private final InvoiceRepository invoiceRepository;
     private final TruckService truckService;
@@ -33,6 +35,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     @Transactional
     public GeneralResult create(CreateInvoiceRequest createInvoiceRequest) throws EntityNotFoundException {
+        log.info("invoice create method started with request : " + createInvoiceRequest);
         Truck truck = truckService.findById(createInvoiceRequest.getTruckId());
         Driver driver = driverService.getById(truck.getDriver().getId());
         Company company = companyService.findById(createInvoiceRequest.getCompanyId());
@@ -53,17 +56,20 @@ public class InvoiceServiceImpl implements InvoiceService {
         bonusService.create(bonus);
 
         InvoiceDto invoiceDto = InvoiceMapper.MAPPER.entityToDto(invoice);
+        log.info("invoice create method ended");
         return new DataResult<>(getMessage(InvoiceMessage.SUCCESSFUL.getKey()), true, invoiceDto);
     }
 
 
     @Override
     public GeneralResult getAll() {
+        log.info("getAll invoice method started");
         List<Invoice> invoices = invoiceRepository.findAll();
         List<InvoiceDto> invoiceDtos = invoices
                 .stream()
                 .map(InvoiceMapper.MAPPER::entityToDto)
                 .toList();
+        log.info("invoice create method ended");
         return new DataResult<>(getMessage(InvoiceMessage.SUCCESSFUL.getKey()), true, invoiceDtos);
     }
 
@@ -77,9 +83,11 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     @Transactional
     public void delete(int invoiceId) throws EntityNotFoundException {
+        log.info("delete invoice method started");
         Invoice invoice = invoiceRepository
                 .findById(invoiceId)
                 .orElseThrow(() -> new EntityNotFoundException(getMessage(InvoiceMessage.NOT_FOUND.getKey())));
+        log.info("invoice delete method ended");
         invoiceRepository.delete(invoice);
     }
 
